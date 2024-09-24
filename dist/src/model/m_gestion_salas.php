@@ -175,6 +175,7 @@ if ($formulario == "consultar_sala") {
 
     $comodin = "";
 
+
     $nombre = variable_exterior("nombre");
 
 
