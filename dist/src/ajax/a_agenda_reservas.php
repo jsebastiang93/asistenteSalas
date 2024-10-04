@@ -72,20 +72,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // $id_asignatura = explode('/', $data['data']['id_asignatura'])[0];
         // $nombre_asignatura = explode('/', $data['data']['id_asignatura'])[1];
         $nombre_asignatura = $data['data']['id_asignatura'];
+        $id_docente =  explode('/**', $data['data']['id_docente'])[0];
+        $nombredocente =  explode('/**', $data['data']['id_docente'])[1];
         $id_usuario = $data['data']['id_usuario'];
         $detalle = "La reserva ha sido generada de manera exitosa, los datos de la reserva son los siguientes: 
         $detalle_sala
         Sede: $nombre_sede 
-        Fecha inicio: $fecha_reserva $hora_inicio - Fecha Fin: $fecha_reserva $hora_fin ";
+        Fecha inicio: $fecha_reserva $hora_inicio - Fecha Fin: $fecha_reserva $hora_fin
+        Docente: $nombredocente ";
         $sql = "INSERT INTO 
                 reservas
-                    ( nombre, estado, id_sede, id_usuario, id_sala, fecha_reserva, hora_reserva_inicio, hora_reserva_fin, observacion_reserva, asignatura) 
+                    ( nombre, estado, id_sede, id_usuario, id_sala, fecha_reserva, hora_reserva_inicio, hora_reserva_fin, observacion_reserva, asignatura, id_usuario_asignado) 
                 VALUES 
-                    ('Reserva exitosa','1','$id_sede','$id_usuario','$id_sala','$fecha_reserva','$hora_inicio','$hora_fin','Observacion: $detalle','$nombre_asignatura')";
+                    ('Reserva exitosa','1','$id_sede','$id_usuario','$id_sala','$fecha_reserva','$hora_inicio','$hora_fin','Observacion: $detalle','$nombre_asignatura',$id_docente)";
         $query = $dbm_mysql->prepare($sql);
         if ($query->execute()) {
             $id_ultimo = $dbm_mysql->lastInsertId();
-            $response = array('mensaje' => 'ok', 'numero_reserva' =>$id_ultimo, 'title' => 'Reserva exitosa #' . $id_ultimo, 'description' => $detalle_sala.' . Asignatura: '.$nombre_asignatura, 'location' => 'Sede: '.$nombre_sede);
+            $response = array('mensaje' => 'ok', 'numero_reserva' => $id_ultimo, 'title' => 'Reserva exitosa #' . $id_ultimo, 'description' => $detalle_sala . '. Docente: ' . $nombredocente . ' . Asignatura: ' . $nombre_asignatura, 'location' => 'Sede: ' . $nombre_sede);
         } else {
             $response = array('mensaje' => 'no',);
         }
