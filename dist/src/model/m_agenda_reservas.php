@@ -24,6 +24,12 @@ $query->execute();
 $asignaturas  = array_asociativo($query);
 
 
+$sql = "SELECT * FROM usuarios WHERE estado = 1";
+$query = $dbm->prepare($sql);
+$query->execute();
+$personal  = array_asociativo($query);
+
+
 //FILTRO
 if ($formulario == "filtrar" || $formulario == "") {
 	$sql = "SELECT 

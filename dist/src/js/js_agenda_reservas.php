@@ -14,6 +14,8 @@
 </script>
 
 <script>
+
+
     "use strict";
     var KTAppCalendar = function() {
         var prueba;
@@ -374,7 +376,7 @@
                         headerToolbar: {
                             left: "prev,next today",
                             center: "title",
-                            right: "dayGridMonth,timeGridWeek,timeGridDay"
+                            right: "timeGridDay, timeGridWeek, dayGridMonth"
                         },
                         initialDate: G,
                         navLinks: !0,

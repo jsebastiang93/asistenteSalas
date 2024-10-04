@@ -131,7 +131,7 @@
 												<?php
 												foreach ($sedes as $key) {
 												?>
-													<option value="<?php echo $key['id'].'/'.$key['nombre'] ?>"><?php echo $key['nombre'] ?></option>
+													<option value="<?php echo $key['id'] . '/' . $key['nombre'] ?>"><?php echo $key['nombre'] ?></option>
 												<?php
 												}
 												?>
@@ -214,31 +214,38 @@
 									</div>
 								</div>
 								<div id="crear_reserva" style="display: none;">
-								<input type="hidden" id="id_usuario" name="id_usuario" value="<?php echo $_SESSION['id_usuario']?>">
+									<input type="hidden" id="id_usuario" name="id_usuario" value="<?php echo $_SESSION['id_usuario'] ?>">
 									<div class="row">
 										<div class="col col-sm-6">
-										<label class="form-label fs-5 fw-bold my-3 required "> Salas disponibles</label>
+											<label class="form-label fs-5 fw-bold my-3 required "> Salas disponibles</label>
 											<select required class=" form-select form-select-solid" name="id_sala" id="id_sala" data-control="select2" data-close-on-select="false" data-placeholder="Salas disponibles" data-allow-clear="true" data-dropdown-parent="#kt_modal_add_event">
 											</select>
 										</div>
 										<div class="col col-sm-6">
-										<label class="form-label fs-5 fw-bold my-3 required"> Asignatura:</label>
-											<!-- <select required class=" form-select form-select-solid" name="id_asignatura" id="id_asignatura" data-control="select2" data-close-on-select="false" data-placeholder="Asignatura a dictar" data-allow-clear="true" data-dropdown-parent="#kt_modal_add_event">
-												<option value="" selected> Seleccione</option>
-												<?php
-												// foreach ($asignaturas as $key) {
-												?>
-													<option value="<?php echo $key['id'] .'/'.$key['nombre']?>"> <?php echo $key['nombre'] ?></option>
-												<?php
-												// }
-
-												?>
-											</select> -->
+											<label class="form-label fs-5 fw-bold my-3 required"> Asignatura:</label>
 											<input type="text" id="id_asignatura" name="id_asignatura" class=" form-control">
 										</div>
 									</div>
+									<div class="row">
+										<div class="col col-sm-12">
+											<label class="form-label fs-5 fw-bold my-3 required "> Docente asignado: </label>
+											<select required class=" form-select form-select-solid" name="id_docente" id="id_docente" data-control="select2" data-close-on-select="false" data-placeholder="Salas disponibles" data-allow-clear="true" data-dropdown-parent="#kt_modal_add_event">
+												<?php
+												if (!(empty($personal))) {
+													foreach ($personal as $key) {
+														if ($key['id_rol'] == 1) {
+												?>
+															<option value="<?= $key['id'] . '/**' . $key['nombres'] . ' ' . $key['apellidos'] ?>"><?= $key['nombres'] . ' ' . $key['apellidos'] ?></option>
+												<?php
+														}
+														# code...
+													}
+												}
 
-
+												?>
+											</select>
+										</div>
+									</div>
 								</div>
 							</div>
 							<div class="modal-footer flex-center">
