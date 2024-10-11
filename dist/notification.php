@@ -22,7 +22,7 @@
 				<!--end::Menu separator-->
 				<!--begin::Menu item-->
 				<div class="menu-item px-5">
-					<!-- <a href="?url_id=usuario&id=<? //echo $_SESSION['id_usuario'] ?>" class="menu-link px-5">Mi Perfil</a> -->
+					<a href="?url_id=usuario&id=<?php echo $_SESSION['id_usuario'] ?>" class="menu-link px-5">Mi Perfil</a>
 				</div>
 				<!--end::Menu item-->
 				<div class="separator my-2"></div>

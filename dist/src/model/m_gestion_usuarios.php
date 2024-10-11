@@ -37,7 +37,7 @@ if ($formulario == "crear_usuario" && $formulario != "") {
     $contrasena = md5($_POST['password']);
 
     // Crear usuario
-    $sql = "INSERT INTO usuarios (usuario, contrasena, tipo_identificacion, identificacion, nombres, apellidos, celular, email, id_rol, estado, fecha) VALUES ('$usuario', '$contrasena','$tipo_identificacion', '$numero_identificacion', '$nombres', '$apellidos', '$celular', '$email', '$rol', '1', NOW())";
+    $sql = "INSERT INTO usuarios (usuario, contrasena, tipo_identificacion, identificacion, nombres, apellidos, celular, email, id_rol, estado, fecha_creacion) VALUES ('$usuario', '$contrasena','$tipo_identificacion', '$numero_identificacion', '$nombres', '$apellidos', '$celular', '$email', '$rol', '1', NOW())";
     $query = $dbm->prepare($sql);
     if ($query->execute()) {
         // EJECUTÓ BIEN

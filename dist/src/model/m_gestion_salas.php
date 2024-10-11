@@ -171,28 +171,6 @@ $query = $dbm->prepare($sql);
 $query->execute();
 $sedes = array_asociativo($query);
 
-if ($formulario == "consultar_sala") {
-
-    $comodin = "";
-
-
-    $nombre = variable_exterior("nombre");
-
-
-    if ($nombre != "") {
-        $comodin .= " AND salas.nombre LIKE '%$nombre%'";
-    }
-
-
-    $sql = "SELECT salas.*,sedes.nombre AS nombre_sede FROM `salas`,`sedes` WHERE salas.id_sede=sedes.id $comodin";
-    $query = $dbm->prepare($sql);
-    $query->execute();
-    $salas2 = array_asociativo($query);
-    //}
-
-}
-
-
 
 
 ?>

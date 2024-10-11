@@ -16,32 +16,29 @@ $sql = "SELECT * FROM sedes WHERE estado = 1";
 $query = $dbm->prepare($sql);
 $query->execute();
 $sedes = array_asociativo($query);
-$disponibilidad_profesional = '{}';
-
-$sql = "SELECT * FROM asignaturas WHERE estado = 1";
-$query = $dbm->prepare($sql);
-$query->execute();
-$asignaturas  = array_asociativo($query);
 
 
 $sql = "SELECT * FROM usuarios WHERE estado = 1";
 $query = $dbm->prepare($sql);
 $query->execute();
-$personal  = array_asociativo($query);
+$usuarios = array_asociativo($query);
 
+
+$disponibilidad_profesional = '{}';
 
 //FILTRO
 if ($formulario == "filtrar" || $formulario == "") {
 	$sql = "SELECT 
 			CONCAT('Reserva exitosa #', reservas.id) as title,
 			CONCAT(salas.nombre, '. Bloque: ', salas.bloque,'. Capacidad de estudiantes: ', salas.capacidad_estudiantes, '. Aire: ', salas.aire_acondicionado, '. Video Beam: ', salas.video_beam, '. Asignatura: ', reservas.asignatura) as description,
-			sedes.nombre as location,
+			CONCAT(sedes.nombre, '. Docente: ', usuarios.nombres,' ', usuarios.apellidos )as location,
 			CONCAT(reservas.fecha_reserva, ' ', reservas.hora_reserva_inicio) as start,
 			CONCAT(reservas.fecha_reserva, ' ', reservas.hora_reserva_fin) as end
 			FROM 
-			reservas, salas, sedes
+			reservas, salas, sedes, usuarios
 			WHERE reservas.id_sala = salas.id
-			AND reservas.id_sede = sedes.id";
+			AND reservas.id_sede = sedes.id
+			AND reservas.id_usuario = usuarios.id";
 
 	$disponibilidad_prof = $dbm->prepare($sql);
 	$disponibilidad_prof->execute();
