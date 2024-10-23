@@ -14,14 +14,12 @@
 </script>
 
 <script>
-
-
     "use strict";
     var KTAppCalendar = function() {
         var prueba;
         var table_ordenes_paciente = '';
         var isClickEventAttached = false;
-        var e, t, n, a, o, r, i, l, d, s, c, m, u, v, f, p, y, D, _, _2, b, k, g, S, Y, h, T, M, w, E, L, x = {
+        var e, t, n, a, o, r, i, l, d, s, c, m, u, v, f, p, y, D, _, _2, b, k, g, S, Y, h, T, M, w, E, L, CO, INCO, x = {
                 id: "",
                 eventName: "",
                 eventDescription: "",
@@ -372,7 +370,7 @@
                 }));
 
 
-                w = new bootstrap.Modal(B), g = B.querySelector('[data-kt-calendar="event_name"]'), S = B.querySelector('[data-kt-calendar="all_day"]'), Y = B.querySelector('[data-kt-calendar="event_description"]'), h = B.querySelector('[data-kt-calendar="event_location"]'), T = B.querySelector('[data-kt-calendar="event_start_date"]'), M = B.querySelector('[data-kt-calendar="event_end_date"]'), E = B.querySelector("#kt_modal_view_event_edit"), L = B.querySelector("#kt_modal_view_event_delete"), F = document.getElementById("kt_calendar_app"), O = moment().startOf("day"), I = O.format("YYYY-MM"), R = O.clone().subtract(1, "day").format("YYYY-MM-DD"), G = O.format("YYYY-MM-DD"), K = O.clone().add(1, "day").format("YYYY-MM-DD"), (e = new FullCalendar.Calendar(F, {
+                w = new bootstrap.Modal(B), g = B.querySelector('[data-kt-calendar="event_name"]'), S = B.querySelector('[data-kt-calendar="all_day"]'), Y = B.querySelector('[data-kt-calendar="event_description"]'), h = B.querySelector('[data-kt-calendar="event_location"]'), T = B.querySelector('[data-kt-calendar="event_start_date"]'), M = B.querySelector('[data-kt-calendar="event_end_date"]'), E = B.querySelector("#kt_modal_view_event_edit"), L = B.querySelector("#kt_modal_view_event_delete"), CO = B.querySelector("#kt_modal_view_event_confirm"), INCO = B.querySelector("#kt_modal_view_event_inconsistencia"), F = document.getElementById("kt_calendar_app"), O = moment().startOf("day"), I = O.format("YYYY-MM"), R = O.clone().subtract(1, "day").format("YYYY-MM-DD"), G = O.format("YYYY-MM-DD"), K = O.clone().add(1, "day").format("YYYY-MM-DD"), (e = new FullCalendar.Calendar(F, {
                         headerToolbar: {
                             left: "prev,next today",
                             center: "title",
@@ -508,34 +506,78 @@
                             }
                         }).then((function(t) {
                             if (t.value === true) {
+                                isClickEventAttached = true;
+                                Swal.fire({
+                                    title: "Seleccione motivo de cancelación",
+                                    html: `
+                                        <div>
+                                        <label for="select3">Motivo:</label>
+                                        <select id="select3" class="form-select">
+                                            <option value=""></option>
+                                            <option value="Docente no asistió">Docente no asistió</option>
+                                            <option value="Clase virtual">Clase virtual</option>
+                                        </select>
+                                        </div>`,
+                                    showCancelButton: true,
+                                    confirmButtonText: "Cancelar reserva",
+                                    showLoaderOnConfirm: true,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        const select3Value = document.getElementById('select3').value;
+                                        if (select3Value == "") {
+                                            Swal.fire({
+                                                position: "top-end",
+                                                icon: "error",
+                                                title: "Debe de seleccionar un motivo de cancelación",
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                            });
+                                        } else {
+                                            var datos_agenda = x.eventName;
+                                            var id_reserva = datos_agenda.split('#')[1];
+                                            fetch('src/ajax/a_agenda_reservas.php', {
+                                                    method: 'POST', // O 'GET' u otro método según tu necesidad
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({
+                                                        accion: 'eliminar_reserva',
+                                                        id_reserva: id_reserva,
+                                                        motivo: select3Value,
+                                                        idusuario: '<?php echo $_SESSION['id_usuario'] ?>',
+                                                    })
+                                                })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    // Manejar la respuesta del servidor aquí
+                                                    if (data.mensaje == "ok") {
+                                                        Swal.fire({
+                                                            position: "top-end",
+                                                            icon: "success",
+                                                            title: "Reserva cancelada correctamente",
+                                                            showConfirmButton: false,
+                                                            timer: 1500
+                                                        });
+                                                        window.location.reload()
+
+                                                        // e.getEventById(x.id).remove();
+                                                        // e.refetchEvents(); // Esto volverá a cargar los eventos en el calendario
+                                                        // w.hide();
+                                                        // p.reset();
+
+                                                    }
+
+                                                })
+                                                .catch(error => {
+                                                    // console.error('Error:', error);
+                                                });
+                                            // console.log(x.id);
+
+                                        }
+                                    }
+                                });
                                 // El usuario hizo clic en el botón "confirmar"
-                                var datos_agenda = x.eventName;
-                                var idagenda = datos_agenda.split('-')[0];
-                                var sede = datos_agenda.split('-')[4];
-                                fetch('src/ajax/a_agenda_reservas.php', {
-                                        method: 'POST', // O 'GET' u otro método según tu necesidad
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({
-                                            accion: 'eliminar_cita',
-                                            idagenda: idagenda,
-                                            sede: sede
-                                        })
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        // Manejar la respuesta del servidor aquí
-                                        console.log(data);
-                                    })
-                                    .catch(error => {
-                                        // console.error('Error:', error);
-                                    });
-                                // console.log(x.id);
-                                e.getEventById(x.id).remove();
-                                e.refetchEvents(); // Esto volverá a cargar los eventos en el calendario
-                                w.hide();
-                                p.reset();
+
                             } else if (t.dismiss === Swal.DismissReason.cancel) {
                                 // El usuario hizo clic en el botón "cancelar"
                                 Swal.fire({
@@ -550,6 +592,162 @@
                             }
                         }));
                     })),
+                    CO.addEventListener("click", (t => {
+                        t.preventDefault();
+                        isClickEventAttached = true;
+                        Swal.fire({
+                            text: "Desea confirmar la reserva?",
+                            icon: "warning",
+                            showCancelButton: !0,
+                            buttonsStyling: !1,
+                            confirmButtonText: "Si!!",
+                            cancelButtonText: "No!!",
+                            customClass: {
+                                confirmButton: "btn btn-primary",
+                                cancelButton: "btn btn-active-light"
+                            }
+                        }).then((function(t) {
+                            if (t.value === true) {
+                                isClickEventAttached = true;
+
+                                var datos_agenda = x.eventName;
+                                var id_reserva = datos_agenda.split('#')[1];
+                                fetch('src/ajax/a_agenda_reservas.php', {
+                                        method: 'POST', // O 'GET' u otro método según tu necesidad
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            accion: 'confirmar_reserva',
+                                            id_reserva: id_reserva,
+                                            idusuario: '<?php echo $_SESSION['id_usuario'] ?>',
+                                        })
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        // Manejar la respuesta del servidor aquí
+                                        if (data.mensaje == "ok") {
+                                            Swal.fire({
+                                                position: "top-end",
+                                                icon: "success",
+                                                title: "Reserva confirmada correctamente",
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                            });
+                                            window.location.reload()
+
+                                            // e.getEventById(x.id).remove();
+                                            // e.refetchEvents(); // Esto volverá a cargar los eventos en el calendario
+                                            // w.hide();
+                                            // p.reset();
+
+                                        }
+
+                                    })
+                                    .catch(error => {
+                                        // console.error('Error:', error);
+                                    });
+                                // console.log(x.id);
+
+                            }
+                            // El usuario hizo clic en el botón "confirmar"
+
+
+                        }));
+                    })),
+                    INCO.addEventListener("click", (t => {
+                        t.preventDefault();
+                        isClickEventAttached = true;
+                        Swal.fire({
+                            text: "Desea generar una inconsistencia a la reserva?",
+                            icon: "warning",
+                            showCancelButton: !0,
+                            buttonsStyling: !1,
+                            confirmButtonText: "Si!!",
+                            cancelButtonText: "No!!",
+                            customClass: {
+                                confirmButton: "btn btn-primary",
+                                cancelButton: "btn btn-active-light"
+                            }
+                        }).then((function(t) {
+                            if (t.value === true) {
+                                isClickEventAttached = true;
+                                Swal.fire({
+                                    title: "Seleccione la inconsistencia",
+                                    html: `
+                                        <div>
+                                        <label for="select3">Inconsistencia:</label>
+                                        <select id="inconsistencia" class="form-select">
+                                            <option value=""></option>
+                                            <option value="No funciona el aire">No funciona el aire</option>
+                                            <option value="No funciona el video beam">No funciona el video beam</option>
+                                        </select>
+                                        </div>`,
+                                    showCancelButton: true,
+                                    confirmButtonText: "Generar inconsistencia",
+                                    showLoaderOnConfirm: true,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        const inconsistencia = document.getElementById('inconsistencia').value;
+                                        if (inconsistencia == "") {
+                                            Swal.fire({
+                                                position: "top-end",
+                                                icon: "error",
+                                                title: "Debe de digitar la inconsistencia",
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                            });
+                                        } else {
+                                            var datos_agenda = x.eventName;
+                                            var id_reserva = datos_agenda.split('#')[1];
+                                            fetch('src/ajax/a_agenda_reservas.php', {
+                                                    method: 'POST', // O 'GET' u otro método según tu necesidad
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({
+                                                        accion: 'generar_inconsistencia',
+                                                        id_reserva: id_reserva,
+                                                        inconsistencia: inconsistencia,
+                                                        idusuario: '<?php echo $_SESSION['id_usuario'] ?>',
+                                                    })
+                                                })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    // Manejar la respuesta del servidor aquí
+                                                    if (data.mensaje == "ok") {
+                                                        Swal.fire({
+                                                            position: "top-end",
+                                                            icon: "success",
+                                                            title: "Inconsistencia generada correctamente",
+                                                            showConfirmButton: false,
+                                                            timer: 1500
+                                                        });
+                                                        // window.location.reload()
+
+                                                        // e.getEventById(x.id).remove();
+                                                        // e.refetchEvents(); // Esto volverá a cargar los eventos en el calendario
+                                                        // w.hide();
+                                                        // p.reset();
+
+                                                    }
+
+                                                })
+                                                .catch(error => {
+                                                    // console.error('Error:', error);
+                                                });
+                                            // console.log(x.id);
+
+                                        }
+                                    }
+                                });
+                            }
+                            // El usuario hizo clic en el botón "confirmar"
+
+
+                        }));
+                    })),
+
                     b.addEventListener("click", (function(e) {
                         e.preventDefault(),
                             Swal.fire({
@@ -576,7 +774,8 @@
                                 e.value ? (p.reset(), v.hide()) : "confirm" === e.dismiss,
                                     document.getElementById('crear_reserva').style.display = 'none';
                             }))
-                    })), k.addEventListener("click", (function(e) {
+                    })),
+                    k.addEventListener("click", (function(e) {
                         e.preventDefault(), Swal.fire({
                             text: "Deseas cancelar la reserva?",
                             icon: "warning",
@@ -602,7 +801,8 @@
                                 document.getElementById('crear_reserva').style.display = 'none';
 
                         }))
-                    })), (e => {
+                    })),
+                    (e => {
                         e.addEventListener("hidden.bs.modal", (e => {
                             y && y.resetForm(!0)
                         }))
@@ -620,10 +820,36 @@
 <!-- Funcionalidad de formulario de Busqueda de paciente  -->
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 <script language="javascript">
-    $("#form_traer_paciente").submit(function(e) {
-        e.preventDefault();
-        // console.log("hola");
-        throw new Error('Este es un mensaje de error y finaliza el programa.');
+    $("#id_sala").on('focusout', function(e) {
+
+        var id_sala = document.getElementById("id_sala").value;
+        fetch('src/ajax/a_agenda_reservas.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    accion: 'consulta_inconsistencias',
+                    id_sala: id_sala
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // console.log(data.resultado);
+                if (data.mensaje == "ok") {
+                    if (data.comentarios_concatenados[0].comentarios_concatenados) {
+                        document.getElementById("alert_inconsis").style.display = 'block';
+                        document.getElementById("text_alert_inconsis").innerHTML = data.comentarios_concatenados[0].comentarios_concatenados;
+                    }else{
+                        document.getElementById("alert_inconsis").style.display = 'none';
+
+                    }
+                  
+                }
+            });
+
+
+
     });
 </script>
 
