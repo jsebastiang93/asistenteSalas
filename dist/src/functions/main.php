@@ -25,7 +25,7 @@ function nombre_sala($id, $dbm)
 	$query = $dbm->prepare($sql);
 	$query->execute();
 	$respuesta = array_asociativo($query)[0];
-	
+
 	return $respuesta;
 }
 
@@ -61,6 +61,17 @@ function nombre_usuarios($id, $dbm)
 	return $respuesta;
 }
 
+function enviar_mail(
+	$datos
+) {
+	$envio_correo =  enviar_mail_em($datos);
+	if ($envio_correo == "") {
+		// var_dump($envio_correo);
+	} else {
+		// var_dump("error " . $envio_correo);
+	}
+}
+
 
 
 
@@ -82,4 +93,3 @@ function array_asociativo($resultado)
 	}
 	return $var;
 }
-

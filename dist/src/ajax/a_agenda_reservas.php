@@ -1,6 +1,11 @@
 <?php
 include "../../seguridad/conexion.php";
 
+include "../functions/main.php";
+
+include "../functions/email.php";
+ob_clean();
+
 session_start();
 $hora_actual = date("H:i:s");
 $dbm_mysql = conectar_mysql();
@@ -92,7 +97,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ";
             $query = $dbm_mysql->prepare($sql);
             if ($query->execute()) {
-                $response = array('mensaje' => 'ok',);
+                $datos['libreria'] = __DIR__ . '/../plugins/PHPMailer-master/PHPMailerAutoload.php';
+                $datos['sala'] = nombre_sala($id_sala[0]['id_sala'], $dbm_mysql)['nombre'];
+                $datos['inconsistencia'] = $inconsistencia;
+                enviar_mail($datos);
+
+
+                $response = array('mensaje' => 'ok');
             } else {
                 $response = array('mensaje' => 'no',);
             }
@@ -101,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     if ($data['accion'] == "consulta_inconsistencias") {
-        $id_sala = explode("/",$data['id_sala'])[0];
+        $id_sala = explode("/", $data['id_sala'])[0];
 
         $sql = "SELECT 
                     GROUP_CONCAT(comentarios_inconsistencia SEPARATOR ', ') AS comentarios_concatenados
@@ -155,13 +166,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode($response);
 } else {
     echo 'Solicitud no válida';
-}
-
-function array_($resultado)
-{
-    $var = array();
-    while ($fila = $resultado->fetch(PDO::FETCH_ASSOC)) {
-        $var[] = $fila;
-    }
-    return $var;
 }
