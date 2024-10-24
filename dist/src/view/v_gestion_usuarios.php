@@ -296,7 +296,7 @@
                                 </div>
                                 <div class="col-6 mb-10">
                                     <label class="required fs-5 fw-bold mb-2">Email</label>
-                                    <input required name="email" type="email" class="form-control form-control-solid" id="email" />
+                                    <input required name="email" type="email" class="form-control form-control-solid" id="email" pattern=".+@unicatolica\.edu\.co" value="@unicatolica.edu.co" />
                                 </div>
                                 <div>
 
@@ -305,8 +305,17 @@
                                     <label class="required fs-5 fw-bold mb-2">Rol</label>
                                     <select required name="rol" id="rol" class="form-select form-select-lg mb-3">
                                         <option value="0" selected>Seleccione ...</option>
-                                        <option value="1">Administrador</option>
-                                        <option value="2">Profesor</option>
+                                        <?php
+                                        foreach ($roles as $key) {
+                                        ?>
+
+                                            <option value="<?php echo $key['id'] ?>"><?php echo $key['nombre'] ?></option>
+                                        <?php
+
+
+                                        }
+
+                                        ?>
                                     </select>
                                 </div>
                                 <div class="col-6 mb-10">

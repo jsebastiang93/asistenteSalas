@@ -169,18 +169,7 @@
 									<input type="hidden" id="id_usuario" name="id_usuario" value="<?php echo $_SESSION['id_usuario'] ?>">
 									<div class="alert alert-custom alert-danger" role="alert" id="alert_inconsis" style="display: none;">
 										<div class="alert-icon">
-											<span class="svg-icon svg-icon-primary svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo1/dist/../src/media/svg/icons/Code/Warning-2.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-													<title>Stockholm-icons / Code / Warning-2</title>
-													<desc>Created with Sketch.</desc>
-													<defs />
-													<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-														<rect x="0" y="0" width="24" height="24" />
-														<path d="M11.1669899,4.49941818 L2.82535718,19.5143571 C2.557144,19.9971408 2.7310878,20.6059441 3.21387153,20.8741573 C3.36242953,20.9566895 3.52957021,21 3.69951446,21 L21.2169432,21 C21.7692279,21 22.2169432,20.5522847 22.2169432,20 C22.2169432,19.8159952 22.1661743,19.6355579 22.070225,19.47855 L12.894429,4.4636111 C12.6064401,3.99235656 11.9909517,3.84379039 11.5196972,4.13177928 C11.3723594,4.22181902 11.2508468,4.34847583 11.1669899,4.49941818 Z" fill="#000000" opacity="0.3" />
-														<rect fill="#000000" x="11" y="9" width="2" height="7" rx="1" />
-														<rect fill="#000000" x="11" y="17" width="2" height="2" rx="1" />
-													</g>
-												</svg><!--end::Svg Icon-->
-											</span>
+											<h2>¡Importante!</h2>
 											<div class="alert-text" id="text_alert_inconsis"></div>
 										</div>
 									</div>
@@ -191,29 +180,42 @@
 											</select>
 										</div>
 										<div class="col col-sm-6">
-											<label class="form-label fs-5 fw-bold my-3 required"> Asignatura:</label>
+											<label class="form-label fs-5 fw-bold my-3 required"> NRC - Descripción asignatura: </label>
 											<input type="text" id="id_asignatura" name="id_asignatura" class=" form-control">
 										</div>
 									</div>
 									<div class="row">
-										<div class="col col-sm-12">
-											<label class="form-label fs-5 fw-bold my-3 required "> Docente asignado: </label>
-											<select required class=" form-select form-select-solid" name="id_docente" id="id_docente" data-control="select2" data-close-on-select="false" data-placeholder="Salas disponibles" data-allow-clear="true" data-dropdown-parent="#kt_modal_add_event">
-												<?php
-												if (!(empty($personal))) {
-													foreach ($personal as $key) {
-														if ($key['id_rol'] == 1) {
-												?>
-															<option value="<?= $key['id'] . '/**' . $key['nombres'] . ' ' . $key['apellidos'] ?>"><?= $key['nombres'] . ' ' . $key['apellidos'] ?></option>
-												<?php
+										<?php
+										if ($_SESSION['id_rol'] == 2) {
+										?>
+											<input type="hidden" name="id_docente" name="id_docente" value="<?php echo $_SESSION['id_usuario'] ?>">
+										<?php
+										} else {
+										?>
+											<div class="col col-sm-12">
+												<label class="form-label fs-5 fw-bold my-3 required "> Docente asignado: </label>
+												<select required class=" form-select form-select-solid" name="id_docente" id="id_docente" data-control="select2" data-close-on-select="false" data-placeholder="Salas disponibles" data-allow-clear="true" data-dropdown-parent="#kt_modal_add_event">
+													<?php
+													if (!(empty($usuarios_lista))) {
+														foreach ($usuarios_lista as $key) {
+															if ($key['id_rol'] == 2) {
+													?>
+																<option value="<?= $key['id'] . '/**' . $key['nombres'] . ' ' . $key['apellidos'] ?>"><?= $key['nombres'] . ' ' . $key['apellidos'] ?></option>
+													<?php
+															}
+															# code...
 														}
-														# code...
 													}
-												}
 
-												?>
-											</select>
-										</div>
+													?>
+												</select>
+											</div>
+
+										<?php
+										}
+
+										?>
+
 									</div>
 								</div>
 							</div>
@@ -250,7 +252,7 @@
 							</div>
 							<!--end::Edit-->
 							<!--begin::Edit-->
-							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-danger me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Delete Event" id="kt_modal_view_event_delete">
+							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-danger me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Eliminar Reserva" id="kt_modal_view_event_delete">
 								<!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
 								<span class="svg-icon svg-icon-2">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -261,7 +263,7 @@
 								</span>
 								<!--end::Svg Icon-->
 							</div>
-							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-success me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Confirm Event" id="kt_modal_view_event_confirm">
+							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-success me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Confirmar Reserva" id="kt_modal_view_event_confirm">
 								<!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
 								<span class="svg-icon svg-icon-success svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo1/dist/../src/media/svg/icons/Navigation/Double-check.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 										<title>Stockholm-icons / Navigation / Double-check</title>
@@ -275,7 +277,7 @@
 									</svg><!--end::Svg Icon--></span>
 								<!--end::Svg Icon-->
 							</div>
-							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-success me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Inconsistencia" id="kt_modal_view_event_inconsistencia">
+							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-success me-2" style="display: none;" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Inconsistencia" id="kt_modal_view_event_inconsistencia">
 								<!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
 								<span class="svg-icon svg-icon-primary svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo1/dist/../src/media/svg/icons/Code/Warning-2.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 										<title>Stockholm-icons / Code / Warning-2</title>
@@ -424,40 +426,40 @@
 				</div>
 				<form id="crear_reserva_masiva" name="crear_reserva_masiva" class="form" method="POST" action="?url_id=agenda_reservas">
 					<input type="hidden" id="formulario" name="formulario" value="crear_reserva_masiva">
+					<div class="alert alert-custom alert-danger m-2 p-2" role="alert" id="alert_inconsis_masivo" style="display: none;">
+						<div class="alert-icon">
+							<h2>¡Importante!</h2>
+							<div class="alert-text" id="text_alert_inconsis_masivo"></div>
+						</div>
+					</div>
 					<div class="row m-2 ">
 						<div class="col col-sm-4">
-							<div class="fv-row mb-9">
-								<label class="fs-6 fw-bold required mb-2">Sede:</label>
-								<!-- <input type="text" class="form-control form-control-solid" placeholder="" name="calendar_event_name" /> -->
-								<select required class="form-select form-select-solid fw-bolder" data-placeholder="Select option" id="sede_masivo" name="sede_masivo">
-									<option value="" selected>Seleccionar Sede </option>
-									<?php
-									foreach ($sedes as $key) {
-									?>
-										<option value="<?php echo $key['id'] . '/' . $key['nombre'] ?>"><?php echo $key['nombre'] ?></option>
-									<?php
-									}
-									?>
-								</select>
-							</div>
+							<label class="fs-6 fw-bold required mb-2">Sede:</label>
+							<select required class="form-select form-select-solid fw-bolder" data-placeholder="Select option" id="sede_masivo" name="sede_masivo">
+								<option value="" selected>Seleccionar Sede </option>
+								<?php
+								foreach ($sedes as $key) {
+								?>
+									<option value="<?php echo $key['id'] . '/' . $key['nombre'] ?>"><?php echo $key['nombre'] ?></option>
+								<?php
+								}
+								?>
+							</select>
 						</div>
 						<div class="col col-sm-4">
-							<div class="fv-row mb-9">
-								<label class="fs-6 fw-bold mb-2 required">Sala:</label>
-								<!-- <input class="form-control form-control-solid" min="0" placeholder="Documento Paciente" type="text" id="kt_modal_add_event_cedula_paciente" name="calendar_event_description"> -->
-								<select required class="form-select form-select-solid fw-bolder" data-dropdown-parent="#kt_modal_create_api_key" data-placeholder="Select option" id="sala_masivo" name="sala_masivo">
-									<option value="" selected>Seleccionar sala </option>
-									<?php
-									if (!(empty($salas))) {
-										foreach ($salas as $key) {
-									?>
-											<option value="<?= $key['id'] ?>"><?= $key['nombre'] ?></option>
-									<?php
-										}
+							<label class="fs-6 fw-bold mb-2 required">Sala:</label>
+							<select required class="form-select form-select-solid fw-bolder" data-dropdown-parent="#kt_modal_create_api_key" data-placeholder="Select option" id="sala_masivo" name="sala_masivo">
+								<option value="" selected>Seleccionar sala </option>
+								<?php
+								if (!(empty($salas))) {
+									foreach ($salas as $key) {
+								?>
+										<option value="<?= $key['id'] ?>"><?= $key['nombre'] ?></option>
+								<?php
 									}
-									?>
-								</select>
-							</div>
+								}
+								?>
+							</select>
 						</div>
 						<div class="col col-sm-4">
 							<label class="fs-6 fw-bold mb-2 required">Dia</label>
@@ -515,7 +517,7 @@
 							</select>
 						</div>
 						<div class="col col-sm-6">
-							<label class="form-label fs-5 fw-bold my-3 required"> Asignatura:</label>
+							<label class="form-label fs-5 fw-bold my-3 required"> NRC - Descripción asignatura :</label>
 							<input type="text" id="nombre_asignatura_masivo" name="nombre_asignatura_masivo" class=" form-control">
 						</div>
 					</div>

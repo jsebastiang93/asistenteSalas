@@ -27,25 +27,29 @@ $query3->execute();
 $salas = array_asociativo($query3);
 
 
-
+$sql = "SELECT * FROM sedes WHERE estado = 1";
+$query3 = $dbm->prepare($sql);
+$query3->execute();
+$sedes = array_asociativo($query3);
 
 
 
 if ($formulario == "crear_inconsistencia" && $formulario != "") {
     // Importación de valores para insert
     $id_sala_c = $_POST['id_sala_c'];
+    $id_sede_c = $_POST['id_sede_c'];
     $comentarios_inconsistencia = $_POST['comentarios_inconsistencia'];
 
     $sql = "INSERT INTO reservas_inconsistencias
-                        (estado, comentarios_inconsistencia, fecha_creacion, id_usuario_creacion, id_sala) 
+                        (estado, comentarios_inconsistencia, fecha_creacion, id_usuario_creacion, id_sala, id_sede) 
                     VALUES 
-                        ('1','$comentarios_inconsistencia','$fecha_hora_hoy','" . $_SESSION['id_usuario'] . "', '" . $id_sala_c . "')
+                        ('1','$comentarios_inconsistencia','$fecha_hora_hoy','" . $_SESSION['id_usuario'] . "', '" . $id_sala_c . "', '$id_sede_c')
                     ";
     $query = $dbm->prepare($sql);
     if ($query->execute()) {
 ?>
         <script>
-            alert("Inconsistencia generada correctamente");
+            alert("Su reporte ha sido enviado exitosamente. Gracias por ayudar a mejorar nuestras instalaciones");
         </script>
     <?php
     } else {
@@ -70,7 +74,7 @@ if ($formulario == "gestionar" && $formulario != "") {
     if ($query->execute()) {
     ?>
         <script>
-            alert("Inconsistencia gestionada correctamente");
+            alert("El reporte ha sido marcado como resuelto exitosamente");
         </script>
     <?php
     } else {
@@ -99,11 +103,11 @@ if ($formulario == "filtrar" && $formulario != "") {
         $comodin .= $comodin_id_usuario;
     }
 
-    $id_reserva = $_POST['id_reserva'];
-    $comodin_id_reserva = "";
-    if ($id_reserva != "") {
-        $comodin_id_reserva = " AND A.id_reserva = '$id_reserva'";
-        $comodin .= $comodin_id_reserva;
+    $estado = $_POST['estado'];
+    $comodin_estado = "";
+    if ($estado != "") {
+        $comodin_estado = " AND A.estado = '$estado'";
+        $comodin .= $comodin_estado;
     }
 
     $id_sala = $_POST['id_sala'];

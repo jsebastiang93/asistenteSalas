@@ -26,8 +26,12 @@
                                 <div class="scroll-y mh-300px mh-lg-325px">
                                     <div class="px-7 py-5">
                                         <div class="mb-10">
-                                            <label class="form-label fs-5 fw-bold mb-3"># Reserva:</label>
-                                            <input id="id_reserva" name="id_reserva" type="number" class="form-control form-control-solid" />
+                                            <label class="form-label fs-5 fw-bold mb-3">Estado:</label>
+                                            <select class="form-select form-select-solid fw-bolder" id="estado" name="estado">
+                                                <option value="" selected>Seleccionar Estado </option>
+                                                <option value="1">Pendiente por gestionar</option>
+                                                <option value="0">Resuelto</option>
+                                            </select>
                                         </div>
                                         <div class="mb-10">
                                             <label class="fs-6 fw-bold mb-2">Sala:</label>
@@ -86,16 +90,15 @@
                                         <th class="min-w-50px"></th>
                                         <th class="min-w-50px"><?php echo $fila['id_reserva'] ?></th>
                                         <th class="min-w-50px">
-                                            <?php  
+                                            <?php
                                             if ($fila['estado'] == 1) {
                                                 echo "Pendiente por gestionar";
-                                            }else{
-                                                echo "Gestionado";
-
+                                            } else {
+                                                echo "Resuelto";
                                             }
-                                            
+
                                             ?>
-                                        
+
                                         </th>
                                         <th class="min-w-50px"><?php echo $fila['fecha_creacion'] ?></th>
                                         <th class="min-w-50px">
@@ -116,7 +119,7 @@
 
                                         <td>
                                             <?php
-                                            if ($fila['estado'] == 1 && $_SESSION['id_rol'] == 1) {
+                                            if ($fila['estado'] == 1 && ($_SESSION['id_rol'] == 1 || $_SESSION['id_rol'] == 3)) {
                                             ?>
                                                 <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_create_api_key2<?php echo $fila['id'] ?>">
                                                     Gestionar
@@ -193,23 +196,35 @@
                             <div class="scroll-y me-n7 pe-7" id="kt_modal_create_api_key_scroll" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_create_api_key_header" data-kt-scroll-wrappers="#kt_modal_create_api_key_scroll" data-kt-scroll-offset="300px">
 
                                 <div class="d-flex flex-column mb-10 fv-row">
-
                                     <div class="row">
                                         <div class="col-12 mb-10">
-                                            <label class="fs-5 fw-bold mb-2">Seleccione sala</label>
-                                            <select name="id_sala_c" id="id_sala_c" class="form-select form-select-lg mb-3">
+                                            <label class="required fs-5 fw-bold mb-2">Seleccione sede</label>
+                                            <select required name="id_sede_c" id="id_sede_c" class="form-select form-select-lg mb-3">
+                                                <option value="0" selected>Seleccione ...</option>
+                                                <?php
+                                                foreach ($sedes as $key) {
+                                                ?>
+                                                    <option value="<?php echo $key['id'] ?>"><?php echo $key['nombre'] ?></option>
+                                                <?php
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 mb-10">
+                                            <label class="required fs-5 fw-bold mb-2">Seleccione sala</label>
+                                            <select required name="id_sala_c" id="id_sala_c" class="form-select form-select-lg mb-3">
                                                 <option value="0" selected>Seleccione ...</option>
                                                 <?php
                                                 foreach ($salas as $key) {
                                                 ?>
                                                     <option value="<?php echo $key['id'] ?>"><?php echo $key['nombre'] ?></option>
                                                 <?php
-                                                    # code...
                                                 }
                                                 ?>
                                             </select>
                                         </div>
-
                                     </div>
                                     <div class="row">
                                         <div class="col-12 mb-10">

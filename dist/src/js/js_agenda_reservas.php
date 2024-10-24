@@ -596,7 +596,7 @@
                         t.preventDefault();
                         isClickEventAttached = true;
                         Swal.fire({
-                            text: "Desea confirmar la reserva?",
+                            text: "¿Está seguro que quiere confirmar la reserva de la sala?",
                             icon: "warning",
                             showCancelButton: !0,
                             buttonsStyling: !1,
@@ -821,7 +821,6 @@
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 <script language="javascript">
     $("#id_sala").on('focusout', function(e) {
-
         var id_sala = document.getElementById("id_sala").value;
         fetch('src/ajax/a_agenda_reservas.php', {
                 method: 'POST',
@@ -851,6 +850,38 @@
 
 
     });
+
+    $("#sala_masivo").on('focusout', function(e) {
+        var id_sala = document.getElementById("sala_masivo").value;
+        fetch('src/ajax/a_agenda_reservas.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    accion: 'consulta_inconsistencias',
+                    id_sala: id_sala
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // console.log(data.resultado);
+                if (data.mensaje == "ok") {
+                    if (data.comentarios_concatenados[0].comentarios_concatenados) {
+                        document.getElementById("alert_inconsis_masivo").style.display = 'block';
+                        document.getElementById("text_alert_inconsis_masivo").innerHTML = data.comentarios_concatenados[0].comentarios_concatenados;
+                    }else{
+                        document.getElementById("alert_inconsis_masivo").style.display = 'none';
+
+                    }
+                  
+                }
+            });
+
+
+
+    });
+
 </script>
 
 <script>

@@ -62,6 +62,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query = $dbm_mysql->prepare($sql);
         if ($query->execute()) {
             $response = array('mensaje' => 'ok',);
+            $sql = "SELECT * FROM reservas WHERE id = $id_reserva";
+            $query = $dbm_mysql->prepare($sql);
+            $query->execute();
+            $reservas = array_asociativo($query)[0];
+
+            $nombre_sede = nombre_sede($reservas['id_sede'], $dbm_mysql)['nombre'];
+            $nombre_sala = nombre_sala($reservas['id_sala'], $dbm_mysql)['nombre'];
+
+            $datos['libreria'] = __DIR__ . '/../plugins/PHPMailer-master/PHPMailerAutoload.php';
+            $datos['asunto'] = 'Cancelación de reserva # '. $id_reserva.' de sala Unicatólica exitosa';
+            $datos['detalle'] = "
+               Se realizó con éxito la cancelación de reserva de la sala $nombre_sede - $nombre_sala para la fecha " . $reservas['fecha_reserva'] . " en el horario " . $reservas['hora_reserva_inicio'] . " - " . $reservas['hora_reserva_inicio'] . ".
+               <br>    
+               En caso que haya sido realizada la cancelación por error, recuerde que puede volver a reservar inmediatamente, si esta tiene la disponibilidad.
+               <br>    
+               Favor no responder a este correo ya que fue generado automáticamente por el sistema.
+                ";
+
+            enviar_mail_rese($datos);
+
         } else {
             $response = array('mensaje' => 'no',);
         }
@@ -75,6 +95,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query = $dbm_mysql->prepare($sql);
         if ($query->execute()) {
             $response = array('mensaje' => 'ok',);
+            $sql = "SELECT * FROM reservas WHERE id = $id_reserva";
+            $query = $dbm_mysql->prepare($sql);
+            $query->execute();
+            $reservas = array_asociativo($query)[0];
+
+            $nombre_sede = nombre_sede($reservas['id_sede'], $dbm_mysql)['nombre'];
+            $nombre_sala = nombre_sala($reservas['id_sala'], $dbm_mysql)['nombre'];
+
+            $datos['libreria'] = __DIR__ . '/../plugins/PHPMailer-master/PHPMailerAutoload.php';
+            $datos['asunto'] = 'Confirmación de reserva # '. $id_reserva.' de sala Unicatólica exitosa';
+            $datos['detalle'] = "
+                Se realizó con éxito la confirmación de reserva de la sala $nombre_sede - $nombre_sala para la fecha " . $reservas['fecha_reserva'] . " en el horario " . $reservas['hora_reserva_inicio'] . " - " . $reservas['hora_reserva_inicio'] . ".
+                <br>    
+                Favor no responder a este correo ya que fue generado automáticamente por el sistema.
+                ";
+
+            enviar_mail_rese($datos);
         } else {
             $response = array('mensaje' => 'no',);
         }
@@ -111,6 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $response = array('mensaje' => 'no',);
         }
     }
+
     if ($data['accion'] == "consulta_inconsistencias") {
         $id_sala = explode("/", $data['id_sala'])[0];
 
@@ -143,7 +181,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // $nombre_asignatura = explode('/', $data['data']['id_asignatura'])[1];
         $nombre_asignatura = $data['data']['id_asignatura'];
         $id_docente =  explode('/**', $data['data']['id_docente'])[0];
-        $nombredocente =  explode('/**', $data['data']['id_docente'])[1];
+
+        if (empty(explode('/**', $data['data']['id_docente']))) {
+            $nombredocente =  explode('/**', $data['data']['id_docente'])[1];
+        } else {
+            $nombredocente =  nombre_usuarios($id_docente, $dbm_mysql)['nombres'] . ' ' . nombre_usuarios($id_docente, $dbm_mysql)['apellidos'];
+        }
+
+
         $id_usuario = $data['data']['id_usuario'];
         $detalle = "La reserva ha sido generada de manera exitosa, los datos de la reserva son los siguientes: 
         $detalle_sala
@@ -151,13 +196,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Fecha inicio: $fecha_reserva $hora_inicio - Fecha Fin: $fecha_reserva $hora_fin
         Docente: $nombredocente ";
         $sql = "INSERT INTO 
-                reservas
-                    ( nombre, estado, id_sede, id_usuario, id_sala, fecha_reserva, hora_reserva_inicio, hora_reserva_fin, observacion_reserva, asignatura, id_usuario_asignado) 
-                VALUES 
-                    ('Reserva exitosa','1','$id_sede','$id_usuario','$id_sala','$fecha_reserva','$hora_inicio','$hora_fin','Observacion: $detalle','$nombre_asignatura',$id_docente)";
+					reservas
+						( estado, id_sede, id_usuario_creacion, id_sala, fecha_reserva, hora_reserva_inicio, hora_reserva_fin, observacion_reserva, asignatura, id_usuario) 
+					VALUES 
+						('1','$id_sede','$id_usuario','$id_sala','$fecha_reserva','$hora_inicio','$hora_fin','Observacion: $detalle','$nombre_asignatura',$id_docente)";
         $query = $dbm_mysql->prepare($sql);
         if ($query->execute()) {
             $id_ultimo = $dbm_mysql->lastInsertId();
+            $datos['libreria'] = __DIR__ . '/../plugins/PHPMailer-master/PHPMailerAutoload.php';
+            $datos['asunto'] = 'Reserva de sala Unicatólica exitosa # ' . $id_ultimo;
+            if (id_rol($id_usuario, $dbm_mysql)['id_rol'] == 2) {
+                $datos['detalle'] = "
+                Usted realizó con éxito la reserva de la sala $nombre_sede - $detalle_sala para la fecha $fecha_reserva en el horario $hora_inicio - $hora_fin.
+                <br>
+                ¡Recuerde! Debe presentarse en el horario establecido para realizar la confirmación de la misma, ya que puede realizarse una cancelación automática después de 30 minutos.
+                <br>
+                Favor no responder a este correo ya que fue generado automáticamente por el sistema.
+                ";
+            } else {
+                $datos['detalle'] = "
+                El personal administrativo realizó con éxito la reserva de la sala $nombre_sede - $detalle_sala para la fecha $fecha_reserva en el horario $hora_inicio - $hora_fin.
+                <br>
+                ¡Recuerde! Debe presentarse en el horario establecido para realizar la confirmación de la misma, ya que puede realizarse una cancelación automática después de 30 minutos.
+                <br>
+                Favor no responder a este correo ya que fue generado automáticamente por el sistema.";
+            }
+            enviar_mail_rese($datos);
             $response = array('mensaje' => 'ok', 'numero_reserva' => $id_ultimo, 'title' => 'Reserva exitosa #' . $id_ultimo, 'description' => $detalle_sala . '. Docente: ' . $nombredocente . ' . Asignatura: ' . $nombre_asignatura, 'location' => 'Sede: ' . $nombre_sede);
         } else {
             $response = array('mensaje' => 'no',);

@@ -33,19 +33,23 @@ $disponibilidad_profesional = '{}';
 
 //FILTRO
 if ($formulario == "filtrar" || $formulario == "") {
+	$comodin = "";
+	if ($_SESSION['id_rol'] == 2) {
+		$comodin .= " AND id_usuario = '" . $_SESSION['id_usuario'] . "'";
+	}
 	$sql = "SELECT 
 				CASE
 					WHEN reservas.estado = '0' THEN 'CANCELADA' -- CANCELADA
-					WHEN reservas.estado = '1' THEN 'ASIGNADA' -- ASIGNADA
+					WHEN reservas.estado = '1' THEN 'RESERVADO' -- RESERVADO
 					WHEN reservas.estado = '2' THEN 'CONFIRMADA' -- CONFIRMADA
-					ELSE 'ASIGNADA'
+					ELSE 'RESERVADO'
 				END AS estado_reserva,
 				CONCAT('Reserva exitosa #', reservas.id, ' - ', 
 					CASE
 						WHEN reservas.estado = '0' THEN 'CANCELADA'
-						WHEN reservas.estado = '1' THEN 'ASIGNADA'
+						WHEN reservas.estado = '1' THEN 'RESERVADO'
 						WHEN reservas.estado = '2' THEN 'CONFIRMADA'
-						ELSE 'ASIGNADA'
+						ELSE 'RESERVADO'
 					END) AS title,
 				CONCAT(salas.nombre, '. Bloque: ', salas.bloque, 
 					'. Capacidad de estudiantes: ', salas.capacidad_estudiantes, 
@@ -57,7 +61,7 @@ if ($formulario == "filtrar" || $formulario == "") {
 				CONCAT(reservas.fecha_reserva, ' ', reservas.hora_reserva_fin) AS end,
 				CASE
 					WHEN reservas.estado = '0' THEN '#ff3333' -- CANCELADA
-					WHEN reservas.estado = '1' THEN '#33beff' -- ASIGNADA
+					WHEN reservas.estado = '1' THEN '#33beff' -- RESERVADO
 					WHEN reservas.estado = '2' THEN '#29c300' -- CONFIRMADA
 					ELSE '#33beff'
 				END AS backgroundColor
@@ -65,7 +69,8 @@ if ($formulario == "filtrar" || $formulario == "") {
 				reservas
 			JOIN salas ON reservas.id_sala = salas.id
 			JOIN sedes ON reservas.id_sede = sedes.id
-			JOIN usuarios ON reservas.id_usuario = usuarios.id;
+			JOIN usuarios ON reservas.id_usuario = usuarios.id
+			$comodin
 			";
 
 	$disponibilidad_prof = $dbm->prepare($sql);
@@ -124,6 +129,32 @@ if ($formulario == "crear_reserva_masiva") {
 		}
 		// Avanzar un día
 		$startDate->modify('+1 day');
+	}
+
+	$nombre_dia_semana = "";
+	switch ($nombre_dia) {
+		case '1':
+			$nombre_dia_semana = 'LUNES';
+			break;
+		case '2':
+			$nombre_dia_semana = 'MARTES';
+			break;
+		case '3':
+			$nombre_dia_semana = 'MIÉRCOLES';
+			break;
+		case '4':
+			$nombre_dia_semana = 'JUEVES';
+			break;
+		case '5':
+			$nombre_dia_semana = 'VIERNES';
+			break;
+		case '6':
+			$nombre_dia_semana = 'SABADO';
+			break;
+
+		default:
+			# code...
+			break;
 	}
 
 	// Imprimir los lunes del rango
@@ -186,6 +217,17 @@ if ($formulario == "crear_reserva_masiva") {
 			alert("<?php echo $mensaje ?>");
 		</script>
 <?php };
+	$datos['libreria'] = 'src/plugins/PHPMailer-master/PHPMailerAutoload.php';
+	$datos['asunto'] = 'Reserva de sala Unicatólica masiva exitosa';
+
+	$datos['detalle'] = "
+	  El personal administrativo realizó con éxito la reserva de la sala $nombre_sede - $nombre_sala  para los días $nombre_dia_semana en el rango de fechas $inicio_reserva a $fin_reserva y en el horario $hora_inicio_reserva a $hora_fin_reserva.
+	<br>
+	¡Recuerde! Debe presentarse en el horario establecido para realizar la confirmación de la misma, ya que puede realizarse una cancelación automática después de 30 minutos.
+	<br>
+	Favor no responder a este correo ya que fue generado automáticamente por el sistema";
+
+	enviar_mail_rese($datos);
 }
 
 function validarfecha_hora($fecha, $horario)
@@ -206,19 +248,24 @@ function validarfecha_hora($fecha, $horario)
 	return $fecha_configurada;
 }
 
+$comodin = "";
+if ($_SESSION['id_rol'] == 2) {
+	$comodin .= " AND id_usuario = '" . $_SESSION['id_usuario'] . "'";
+}
+
 $sql = "SELECT 
 				CASE
 					WHEN reservas.estado = '0' THEN 'CANCELADA' -- CANCELADA
-					WHEN reservas.estado = '1' THEN 'ASIGNADA' -- ASIGNADA
+					WHEN reservas.estado = '1' THEN 'RESERVADO' -- RESERVADO
 					WHEN reservas.estado = '2' THEN 'CONFIRMADA' -- CONFIRMADA
-					ELSE 'ASIGNADA'
+					ELSE 'RESERVADO'
 				END AS estado_reserva,
 				CONCAT('Reserva exitosa #', reservas.id, ' - ', 
 					CASE
 						WHEN reservas.estado = '0' THEN 'CANCELADA'
-						WHEN reservas.estado = '1' THEN 'ASIGNADA'
+						WHEN reservas.estado = '1' THEN 'RESERVADO'
 						WHEN reservas.estado = '2' THEN 'CONFIRMADA'
-						ELSE 'ASIGNADA'
+						ELSE 'RESERVADO'
 					END) AS title,
 				CONCAT(salas.nombre, '. Bloque: ', salas.bloque, 
 					'. Capacidad de estudiantes: ', salas.capacidad_estudiantes, 
@@ -230,7 +277,7 @@ $sql = "SELECT
 				CONCAT(reservas.fecha_reserva, ' ', reservas.hora_reserva_fin) AS end,
 				CASE
 					WHEN reservas.estado = '0' THEN '#ff3333' -- CANCELADA
-					WHEN reservas.estado = '1' THEN '#33beff' -- ASIGNADA
+					WHEN reservas.estado = '1' THEN '#33beff' -- RESERVADO
 					WHEN reservas.estado = '2' THEN '#29c300' -- CONFIRMADA
 					ELSE '#33beff'
 				END AS backgroundColor
@@ -238,7 +285,8 @@ $sql = "SELECT
 				reservas
 			JOIN salas ON reservas.id_sala = salas.id
 			JOIN sedes ON reservas.id_sede = sedes.id
-			JOIN usuarios ON reservas.id_usuario = usuarios.id;
+			JOIN usuarios ON reservas.id_usuario = usuarios.id
+			$comodin
 			";
 
 $disponibilidad_prof = $dbm->prepare($sql);
