@@ -1,0 +1,6 @@
+crear archivo composer json ( Twilio SDK requiere PHP versión 7.2 o superior )
+1. instalar: composer (configurar archivo autoload-vendor)
+2. intalar: composer require twilio/sdk
+3. $token = AUTH TOKEN - $sid = ACCOUNT SID
+
+https://www.twilio.com/docs/libraries/php

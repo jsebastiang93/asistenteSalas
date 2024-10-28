@@ -22,6 +22,10 @@ if (isset($_POST['formulario'])) {
     $formulario = "";
 }
 
+$sql = "SELECT * FROM roles WHERE estado = 1";
+$query = $dbm->prepare($sql);
+$query->execute();
+$roles = array_asociativo($query);
 
 
 if ($formulario == "crear_usuario" && $formulario != "") {
@@ -36,24 +40,34 @@ if ($formulario == "crear_usuario" && $formulario != "") {
     $usuario = strstr($email, "@", true);
     $contrasena = md5($_POST['password']);
 
-    // Crear usuario
-    $sql = "INSERT INTO usuarios (usuario, contrasena, tipo_identificacion, identificacion, nombres, apellidos, celular, email, id_rol, estado, fecha) VALUES ('$usuario', '$contrasena','$tipo_identificacion', '$numero_identificacion', '$nombres', '$apellidos', '$celular', '$email', '$rol', '1', NOW())";
+    $sql = "SELECT COUNT(*) AS cont FROM usuarios WHERE email = '$email'";
     $query = $dbm->prepare($sql);
-    if ($query->execute()) {
-        // EJECUTÓ BIEN
+    $query->execute();
+    $cont = array_asociativo($query)[0]['cont'];
+
+    if ($cont == 0) {
+        $sql = "INSERT INTO usuarios (usuario, contrasena, tipo_identificacion, identificacion, nombres, apellidos, celular, email, id_rol, estado, fecha_creacion) VALUES ('$usuario', '$contrasena','$tipo_identificacion', '$numero_identificacion', '$nombres', '$apellidos', '$celular', '$email', '$rol', '1', NOW())";
+        $query = $dbm->prepare($sql);
+        if ($query->execute()) {
 ?>
-        <script>
-            alert("El usuario se insertó correctamente");
-        </script>
+            <script>
+                alert("El usuario se insertó correctamente");
+            </script>
 
-    <?php
+        <?php
+        } else {
+        ?>
+            <script>
+                alert("Error! El usuario no se insertó correctamente");
+            </script>
+
+        <?php
+        }
     } else {
-        // ERROR DOS
-    ?>
+        ?>
         <script>
-            alert("Error! El usuario no se insertó correctamente");
+            alert("Error! El usuario ya existe");
         </script>
-
     <?php
     }
 }
@@ -101,14 +115,14 @@ $usuarios = array_asociativo($query);
 // Filtrar usuario
 if ($formulario == "filtrar_usuario" && $formulario != "") {
     $comodin = "";
-    
+
     $identificacion = $_POST['numero_identificacion'];
     $comodin_identificacion = "";
     if ($identificacion != "") {
         $comodin_identificacion = " AND identificacion = '$identificacion'";
         $comodin .= $comodin_identificacion;
     }
-    
+
     $usuario = $_POST['usuario'];
     $comodin_usuario = "";
     if ($usuario != "") {

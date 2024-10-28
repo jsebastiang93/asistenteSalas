@@ -73,6 +73,7 @@
                                 <th class="min-w-125px">Video Beam</th>
                                 <th class="min-w-125px">Observaciones</th>
                                 <th class="min-w-125px">Estado</th>
+                                <th class="min-w-125px">Acción</th>
                             </tr>
                         </thead>
                         <tbody class="fw-bold text-gray-600">

@@ -13,7 +13,7 @@ function conectar_mysql()
 	$motor = "mysql";
 	$servidor = 'localhost:3306';
 	$usuario = 'root';
-	$clave = '123456789';
+	$clave = '';
 	$baseDatos = 'asistentesalas'; //Base de datos de SQL Server
 	$dsn = $motor . ":host=" . $servidor . ";dbname=" . $baseDatos;
 
