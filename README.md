@@ -1,2 +1,2 @@
-# asistenteSalas
-Repositorio aplicación prototipado TI | Asistente de Salas Universidad
+# asistenteSalas UNICATÓLICA
+Repositorio aplicación | Asistente de Salas Universidad UNICATOLICA

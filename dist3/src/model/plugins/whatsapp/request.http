@@ -1,0 +1,10 @@
+###
+//POST http://127.0.0.1/api_whatsapp/api/?numero=+573024554814&mensaje=123 HTTP/1.1
+POST http://127.0.0.1/siscuso_remoto/sicuso/dist/src/plugins/whatsapp/api.php HTTP/1.1
+Content-Type: application/json
+
+{
+    "numero": "3024554814",
+    "mensaje": "uso ASISTENTE SALAS prueba Desde api request"
+}
+###

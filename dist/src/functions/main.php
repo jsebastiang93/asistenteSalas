@@ -13,27 +13,7 @@ function variable_exterior($nombre)
 }
 
 
-function validar_usuario_existente($usuario, $contraseña,$identificacion, $dbm)
-{
-
-	$dbm = $dbm;
-	$usuario = $usuario;
-	$contraseña = $contraseña;
-	$identificacion = $identificacion;
-
-	$respuesta = "";
-
-	$sql = "SELECT COUNT(*) AS cont FROM `clientes` WHERE usuario = '$usuario' AND contraseña = '$contraseña' AND identificacion = '$identificacion'";
-	$query = $dbm->prepare($sql);
-	$query->execute();
-	while ($fila = $query->fetch()) {
-		$respuesta =  $fila[0];
-	}
-
-	return $respuesta;
-}
-
-function nombre_producto($id, $dbm)
+function nombre_sala($id, $dbm)
 {
 
 	$dbm = $dbm;
@@ -41,15 +21,88 @@ function nombre_producto($id, $dbm)
 
 	$respuesta = "";
 
-	$sql = "SELECT * FROM `lavadoras` WHERE id = '$id'";
+	$sql = "SELECT * FROM salas WHERE id = '$id'";
 	$query = $dbm->prepare($sql);
 	$query->execute();
-	while ($fila = $query->fetch()) {
-		$respuesta =  $fila[0];
-	}
+	$respuesta = array_asociativo($query)[0];
 
 	return $respuesta;
 }
+
+function nombre_sede($id, $dbm)
+{
+
+	$dbm = $dbm;
+	$id = $id;
+
+	$respuesta = "";
+
+	$sql = "SELECT * FROM sedes WHERE id = '$id'";
+	$query = $dbm->prepare($sql);
+	$query->execute();
+	$respuesta = array_asociativo($query)[0];
+
+	return $respuesta;
+}
+
+function id_rol($id, $dbm)
+{
+
+	$dbm = $dbm;
+	$id = $id;
+
+	$respuesta = "";
+
+	$sql = "SELECT * FROM usuarios WHERE id = '$id'";
+	$query = $dbm->prepare($sql);
+	$query->execute();
+	$respuesta = array_asociativo($query)[0];
+
+	return $respuesta;
+}
+
+
+function nombre_usuarios($id, $dbm)
+{
+
+	$dbm = $dbm;
+	$id = $id;
+
+	$respuesta = "";
+
+	$sql = "SELECT * FROM usuarios WHERE id = '$id'";
+	$query = $dbm->prepare($sql);
+	$query->execute();
+	$respuesta = array_asociativo($query)[0];
+
+	return $respuesta;
+}
+
+function enviar_mail(
+	$datos
+) {
+	$envio_correo =  enviar_mail_em($datos);
+	if ($envio_correo == "") {
+		// var_dump($envio_correo);
+	} else {
+		// var_dump("error " . $envio_correo);
+	}
+}
+
+function enviar_mail_rese(
+	$datos
+) {
+	$envio_correo =  enviar_mail_reserva($datos);
+	if ($envio_correo == "") {
+		// var_dump($envio_correo);
+	} else {
+		// var_dump("error " . $envio_correo);
+	}
+}
+
+
+
+
 
 
 function array_($resultado)
@@ -70,4 +123,3 @@ function array_asociativo($resultado)
 	}
 	return $var;
 }
-
