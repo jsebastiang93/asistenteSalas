@@ -11,10 +11,10 @@ function conectar_mysql()
 {
 	$dbm = "";
 	$motor = "mysql";
-	$servidor = 'localhost:3306';
-	$usuario = 'root';
-	$clave = '';
-	$baseDatos = 'asistentesalas'; //Base de datos de SQL Server
+	$servidor = '127.0.0.1:3306';
+	$usuario = 'u954889421_admin';
+	$clave = 'Hostinger.unicatolica2024';
+	$baseDatos = 'u954889421_asistentesalas'; //Base de datos de SQL Server
 	$dsn = $motor . ":host=" . $servidor . ";dbname=" . $baseDatos;
 
 	try {
