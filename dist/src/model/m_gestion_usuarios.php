@@ -25,7 +25,7 @@ if (isset($_POST['formulario'])) {
 $sql = "SELECT * FROM roles WHERE estado = 1";
 $query = $dbm->prepare($sql);
 $query->execute();
-$roles = array_asociativo($query);
+$roles_lista = array_asociativo($query);
 
 
 if ($formulario == "crear_usuario" && $formulario != "") {

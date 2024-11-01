@@ -306,7 +306,7 @@
                                     <select required name="rol" id="rol" class="form-select form-select-lg mb-3">
                                         <option value="0" selected>Seleccione ...</option>
                                         <?php
-                                        foreach ($roles as $key) {
+                                        foreach ($roles_lista as $key) {
                                         ?>
 
                                             <option value="<?php echo $key['id'] ?>"><?php echo $key['nombre'] ?></option>
