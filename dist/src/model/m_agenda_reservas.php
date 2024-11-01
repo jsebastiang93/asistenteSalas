@@ -181,6 +181,8 @@ if ($formulario == "crear_reserva_masiva") {
 			$nombre_sala = nombre_sala($sala_masivo, $dbm)['nombre'];
 			$nombre_sede = nombre_sede($sede_masivo, $dbm)['nombre'];
 			$nombredocente = nombre_usuarios($id_docente, $dbm)['nombres'] . nombre_usuarios($id_docente, $dbm)['apellidos'];
+			$datos['email_enviar'] = nombre_usuarios($id_docente, $dbm)['email'];
+
 			$detalle = "La reserva ha sido generada de manera exitosa, los datos de la reserva son los siguientes: 
 			$nombre_sala
 			Sede: $nombre_sede 

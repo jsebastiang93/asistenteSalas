@@ -32,7 +32,7 @@
                             <!--begin::Content-->
 
 
-                            <form class="form" action="?url_id=gestion_personal" method="POST" id="consultar_personal" name="consultar_personal" enctype="multipart/form-data">
+                            <form class="form" action="?url_id=gestion_salas" method="POST" id="consultar_personal" name="consultar_personal" enctype="multipart/form-data">
                                 <input type="hidden" name="formulario" id="formulario" value="consultar_personal">
                                 <div class="scroll-y mh-300px mh-lg-325px">
                                     <div class="px-7 py-5">

@@ -30,8 +30,8 @@ function enviar_mail_em($datos)
 	//Set who the message is to be sent from
 	$mail->setFrom('calidad.tic@unidadso.com.co', 'Inconsistencia registrada en salas de cómputo');
 	//Set who the message is to be sent to
-	$mail->addAddress('juan.gutierrez02@unicatolica.edu.co');
-	$mail->addReplyTo('juan.gutierrez02@unicatolica.edu.co');
+	$mail->addAddress($datos['email_enviar']);
+	$mail->addReplyTo($datos['email_enviar']);
 	//Set the subject line
 	$mail->Subject = utf8_decode('Inconsistencia registrada en salas de cómputo');
 	$mail->CharSet = 'UTF-8';
@@ -85,8 +85,8 @@ function enviar_mail_reserva($datos)
 	//Set who the message is to be sent from
 	$mail->setFrom('calidad.tic@unidadso.com.co', $datos['asunto']);
 	//Set who the message is to be sent to
-	$mail->addAddress('valentina.duque01@unicatolica.edu.co');
-	$mail->addReplyTo('valentina.duque01@unicatolica.edu.co');
+	$mail->addAddress($datos['email_enviar']);
+	$mail->addReplyTo($datos['email_enviar']);
 	//Set the subject line
 	$mail->Subject = utf8_decode($datos['asunto']);
 	$mail->CharSet = 'UTF-8';
