@@ -117,7 +117,7 @@ if ($formulario == "filtrar" && $formulario != "") {
         $comodin .= $comodin_id_sala;
     }
 
-    $sql = "SELECT A.*, B.nombre as nombre_sala FROM reservas_inconsistencias A, salas B, usuarios C WHERE A.id_sala = B.id AND A.id_usuario_creacion = c.id $comodin";
+    $sql = "SELECT A.*, B.nombre as nombre_sala FROM reservas_inconsistencias A, salas B, usuarios C WHERE A.id_sala = B.id AND A.id_usuario_creacion = C.id $comodin";
     $query = $dbm->prepare($sql);
     $query->execute();
     $reservas_inconsistencias = array_asociativo($query);
