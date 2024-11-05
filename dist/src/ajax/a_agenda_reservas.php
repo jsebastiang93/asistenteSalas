@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $nombre_sede = nombre_sede($reservas['id_sede'], $dbm_mysql)['nombre'];
             $nombre_sala = nombre_sala($reservas['id_sala'], $dbm_mysql)['nombre'];
-			$datos['email_enviar'] = nombre_usuarios($reservas['id_usuario'], $dbm)['email'];
+			$datos['email_enviar'] = nombre_usuarios($reservas['id_usuario'], $dbm_mysql)['email'];
 
             $datos['libreria'] = __DIR__ . '/../plugins/PHPMailer-master/PHPMailerAutoload.php';
             $datos['asunto'] = 'Cancelación de reserva # '. $id_reserva.' de sala Unicatólica exitosa';
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $nombre_sede = nombre_sede($reservas['id_sede'], $dbm_mysql)['nombre'];
             $nombre_sala = nombre_sala($reservas['id_sala'], $dbm_mysql)['nombre'];
-			$datos['email_enviar'] = nombre_usuarios($reservas['id_usuario'], $dbm)['email'];
+			$datos['email_enviar'] = nombre_usuarios($reservas['id_usuario'], $dbm_mysql)['email'];
 
             $datos['libreria'] = __DIR__ . '/../plugins/PHPMailer-master/PHPMailerAutoload.php';
             $datos['asunto'] = 'Confirmación de reserva # '. $id_reserva.' de sala Unicatólica exitosa';
@@ -207,7 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id_ultimo = $dbm_mysql->lastInsertId();
             $datos['libreria'] = __DIR__ . '/../plugins/PHPMailer-master/PHPMailerAutoload.php';
             $datos['asunto'] = 'Reserva de sala Unicatólica exitosa # ' . $id_ultimo;
-			$datos['email_enviar'] = nombre_usuarios($id_usuario, $dbm)['email'];
+			$datos['email_enviar'] = nombre_usuarios($id_usuario, $dbm_mysql)['email'];
             if (id_rol($id_usuario, $dbm_mysql)['id_rol'] == 2) {
                 $datos['detalle'] = "
                 Usted realizó con éxito la reserva de la sala $nombre_sede - $detalle_sala para la fecha $fecha_reserva en el horario $hora_inicio - $hora_fin.
