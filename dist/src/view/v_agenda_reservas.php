@@ -40,7 +40,7 @@
 						&nbsp;
 						&nbsp;
 						<a href="#" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#kt_modal_create_api_key">
-							Cargue Masivo
+							Generar Reservas Masivas
 						</a>
 					</div>
 				</div>
@@ -414,7 +414,7 @@
 		<div class="modal-dialog modal-dialog-centered mw-650px">
 			<div class="modal-content">
 				<div class="modal-header" id="kt_modal_create_api_key_header">
-					<h2>Crear Usuario</h2>
+					<h2>Crear Reserva Masiva</h2>
 					<div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
 						<span class="svg-icon svg-icon-1">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
