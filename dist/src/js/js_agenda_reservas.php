@@ -789,7 +789,7 @@
                             }
                         }).then((function(e) {
                             e.value ? (p.reset(), v.hide()) : "cancel" === e.dismiss && Swal.fire({
-                                text: "No has cancelado larReserva!!!",
+                                text: "No has cancelado la Reserva!!!",
                                 icon: "error",
                                 buttonsStyling: !1,
                                 confirmButtonText: "Ok",

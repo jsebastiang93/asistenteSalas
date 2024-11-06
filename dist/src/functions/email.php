@@ -33,7 +33,7 @@ function enviar_mail_em($datos)
 	$mail->addAddress($datos['email_enviar']);
 	$mail->addReplyTo($datos['email_enviar']);
 	//Set the subject line
-	$mail->Subject = utf8_decode('Inconsistencia registrada en salas de cómputo');
+	$mail->Subject = 'Inconsistencia registrada en salas de cómputo';
 	$mail->CharSet = 'UTF-8';
 	//Read an HTML message body from an external file, convert referenced images to embedded,
 	//convert HTML into a basic plain-text alternative body
@@ -42,7 +42,7 @@ function enviar_mail_em($datos)
 			" . $datos['inconsistencia'] . " <br>
 			Favor no responder a este correo ya que fue generado automáticamente por el sistema.
 		";
-	$mail->msgHTML(utf8_decode($body));
+	$mail->msgHTML($body);
 	//$mail->addAttachment('images/phpmailer_mini.png');
 
 	if ($mail->send()) {
@@ -88,12 +88,12 @@ function enviar_mail_reserva($datos)
 	$mail->addAddress($datos['email_enviar']);
 	$mail->addReplyTo($datos['email_enviar']);
 	//Set the subject line
-	$mail->Subject = utf8_decode($datos['asunto']);
+	$mail->Subject = $datos['asunto'];
 	$mail->CharSet = 'UTF-8';
 	//Read an HTML message body from an external file, convert referenced images to embedded,
 	//convert HTML into a basic plain-text alternative body
 	$body = $datos['detalle'];
-	$mail->msgHTML(utf8_decode($body));
+	$mail->msgHTML($body);
 	//$mail->addAttachment('images/phpmailer_mini.png');
 
 	if ($mail->send()) {

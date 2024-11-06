@@ -32,8 +32,8 @@
                             <!--begin::Content-->
 
 
-                            <form class="form" action="?url_id=gestion_salas" method="POST" id="consultar_personal" name="consultar_personal" enctype="multipart/form-data">
-                                <input type="hidden" name="formulario" id="formulario" value="consultar_personal">
+                            <form class="form" action="?url_id=gestion_salas" method="POST" id="consultar_salas" name="consultar_salas" enctype="multipart/form-data">
+                                <input type="hidden" name="formulario" id="formulario" value="consultar_salas">
                                 <div class="scroll-y mh-300px mh-lg-325px">
                                     <div class="px-7 py-5">
                                         <div class="mb-10">
@@ -127,17 +127,8 @@
                                                                 <div class="row">
                                                                     <div class="col-12 mb-10">
                                                                         <label class="required fs-5 fw-bold mb-2">Sede: </label>
-                                                                        <select required class="form-select form-select-solid fw-bolder" data-placeholder="Select option" id="id_sede" name="id_sede">
-                                                                            <option value="" selected>Seleccionar Sede </option>
-                                                                            <?php
-                                                                            foreach ($sedes as $key) {
-                                                                            ?>
-                                                                                <option value="<?php echo $key['id'] ?>"><?php echo $key['nombre'] ?></option>
-                                                                            <?php
-                                                                            }
-                                                                            ?>
-
-                                                                        </select>
+                                                                        <input type="text"  class="form-control form-control-solid" readonly value="<?php echo $fila['nombre_sede']?>">
+                                                                        <input type="hidden" id="id_sede" name="id_sede" value="<?php echo $fila['id_sede']?>">
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">

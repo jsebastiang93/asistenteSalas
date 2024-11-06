@@ -80,16 +80,9 @@
                                         <td><?php echo $fila['apellidos'] ?></td>
                                         <td><?php echo $fila['celular'] ?></td>
                                         <td><?php echo $fila['email'] ?></td>
+                                        <td><?php echo $fila['nombre_rol'] ?></td>
 
-                                        <td>
-                                            <?php
-                                            if ($fila['id_rol'] == 1) {
-                                                echo "Administrador";
-                                            } else {
-                                                echo "Docente";
-                                            }
-                                            ?>
-                                        </td>
+                                     
                                         <td>
                                             <?php
                                             if ($fila['estado'] == 1) {
@@ -161,39 +154,32 @@
                                                                     <div>
 
                                                                     </div class="row">
-                                                                    <div class="col-6 mb-10">
+                                                                    <div class="col-12 mb-10">
                                                                         <label class="required fs-5 fw-bold mb-2">Rol</label>
                                                                         <select required name="rol" id="rol" class="form-select form-select-lg mb-3">
+                                                                            <?php
+                                                                            foreach ($roles_lista as $key) {
+                                                                                if ($fila['id_rol'] == $key['id']) {
+                                                                            ?>
+                                                                                    <option selected value="<?php echo $key['id'] ?>"><?php echo $key['nombre'] ?></option>
+
+                                                                                <?php
+                                                                                } else {
+                                                                                ?>
+                                                                                    <option value="<?php echo $key['id'] ?>"><?php echo $key['nombre'] ?></option>
+
+                                                                                <?php
+                                                                                }
+                                                                                ?>
 
                                                                             <?php
-                                                                            if ($fila['id_rol'] == "1") {
-                                                                            ?>
-                                                                                <option value="1" selected>Administrador</option>
-                                                                            <?php
-                                                                            } else {
-                                                                            ?>
-                                                                                <option value="1">Administrador</option>
-                                                                            <?php
+
+
                                                                             }
-                                                                            ?>
-                                                                            <?php
-                                                                            if ($fila['id_rol'] == "2") {
-                                                                            ?>
-                                                                                <option value="2" selected>Profesor</option>
-                                                                            <?php
-                                                                            } else {
-                                                                            ?>
-                                                                                <option value="2">Profesor</option>
-                                                                            <?php
-                                                                            }
+
                                                                             ?>
                                                                         </select>
                                                                     </div>
-                                                                    <div class="col-6 mb-10">
-                                                                        <label class="required fs-5 fw-bold mb-2">Contrasena</label>
-                                                                        <input required name="password" type="password" class="form-control form-control-solid" id="password" />
-                                                                    </div>
-
                                                                 </div class="row">
                                                                 <label class="required fs-5 fw-bold mb-2"> Estado Usuario</label>
                                                                 <select name="estado" id="estado" class="form-control">
