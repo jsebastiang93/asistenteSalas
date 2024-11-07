@@ -69,10 +69,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $nombre_sede = nombre_sede($reservas['id_sede'], $dbm_mysql)['nombre'];
             $nombre_sala = nombre_sala($reservas['id_sala'], $dbm_mysql)['nombre'];
-			$datos['email_enviar'] = nombre_usuarios($reservas['id_usuario'], $dbm_mysql)['email'];
+            $datos['email_enviar'] = nombre_usuarios($reservas['id_usuario'], $dbm_mysql)['email'];
 
             $datos['libreria'] = __DIR__ . '/../plugins/PHPMailer-master/PHPMailerAutoload.php';
-            $datos['asunto'] = 'Cancelación de reserva # '. $id_reserva.' de sala Unicatólica exitosa';
+            $datos['asunto'] = 'Cancelación de reserva # ' . $id_reserva . ' de sala Unicatólica exitosa';
             $datos['detalle'] = "
                Se realizó con éxito la cancelación de reserva de la sala $nombre_sede - $nombre_sala para la fecha " . $reservas['fecha_reserva'] . " en el horario " . $reservas['hora_reserva_inicio'] . " - " . $reservas['hora_reserva_inicio'] . ".
                <br>    
@@ -82,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ";
 
             enviar_mail_rese($datos);
-
         } else {
             $response = array('mensaje' => 'no',);
         }
@@ -103,10 +102,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $nombre_sede = nombre_sede($reservas['id_sede'], $dbm_mysql)['nombre'];
             $nombre_sala = nombre_sala($reservas['id_sala'], $dbm_mysql)['nombre'];
-			$datos['email_enviar'] = nombre_usuarios($reservas['id_usuario'], $dbm_mysql)['email'];
+            $datos['email_enviar'] = nombre_usuarios($reservas['id_usuario'], $dbm_mysql)['email'];
 
             $datos['libreria'] = __DIR__ . '/../plugins/PHPMailer-master/PHPMailerAutoload.php';
-            $datos['asunto'] = 'Confirmación de reserva # '. $id_reserva.' de sala Unicatólica exitosa';
+            $datos['asunto'] = 'Confirmación de reserva # ' . $id_reserva . ' de sala Unicatólica exitosa';
             $datos['detalle'] = "
                 Se realizó con éxito la confirmación de reserva de la sala $nombre_sede - $nombre_sala para la fecha " . $reservas['fecha_reserva'] . " en el horario " . $reservas['hora_reserva_inicio'] . " - " . $reservas['hora_reserva_inicio'] . ".
                 <br>    
@@ -167,6 +166,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $response = array('mensaje' => 'ok', 'comentarios_concatenados' => $comentarios_concatenados);
     }
 
+    if ($data['accion'] == "consulta_salas") {
+        $id_sede = explode("/", $data['id_sede'])[0];
+
+        $sql = "SELECT 
+                    *
+                FROM 
+                    salas 
+                WHERE 
+                    id_sede = $id_sede 
+                    AND estado = 1;";
+        $query = $dbm_mysql->prepare($sql);
+        $query->execute();
+        $salas = array_($query);
+        $response = array('mensaje' => 'ok', 'salas' => $salas);
+    }
 
 
 
@@ -179,8 +193,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $hora_fin = $data['data']['calendar_event_end_time'];
         $id_sala = explode('/', $data['data']['id_sala'])[0];
         $detalle_sala = explode('/', $data['data']['id_sala'])[1];
-        // $id_asignatura = explode('/', $data['data']['id_asignatura'])[0];
-        // $nombre_asignatura = explode('/', $data['data']['id_asignatura'])[1];
         $nombre_asignatura = $data['data']['id_asignatura'];
         $id_docente =  explode('/**', $data['data']['id_docente'])[0];
 
@@ -190,45 +202,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nombredocente =  nombre_usuarios($id_docente, $dbm_mysql)['nombres'] . ' ' . nombre_usuarios($id_docente, $dbm_mysql)['apellidos'];
         }
 
+        $sql = "SELECT 
+                    COUNT(*) AS cont
+                FROM 
+                    salas
+                LEFT JOIN reservas
+                    ON salas.id = reservas.id_sala
+                    AND reservas.fecha_reserva = '$fecha_reserva'
+                    AND reservas.hora_reserva_inicio BETWEEN '$hora_inicio' AND '$hora_fin'
+                    AND reservas.hora_reserva_fin BETWEEN '$hora_inicio' AND '$hora_fin'
+                WHERE salas.id_sede = '$id_sede' 
+				AND reservas.id_sala = '$id_sala' ";
 
-        $id_usuario = $data['data']['id_usuario'];
-        $detalle = "La reserva ha sido generada de manera exitosa, los datos de la reserva son los siguientes: 
-        $detalle_sala
-        Sede: $nombre_sede 
-        Fecha inicio: $fecha_reserva $hora_inicio - Fecha Fin: $fecha_reserva $hora_fin
-        Docente: $nombredocente ";
-        $sql = "INSERT INTO 
-					reservas
-						( estado, id_sede, id_usuario_creacion, id_sala, fecha_reserva, hora_reserva_inicio, hora_reserva_fin, observacion_reserva, asignatura, id_usuario) 
-					VALUES 
-						('1','$id_sede','$id_usuario','$id_sala','$fecha_reserva','$hora_inicio','$hora_fin','Observacion: $detalle','$nombre_asignatura',$id_docente)";
-        $query = $dbm_mysql->prepare($sql);
-        if ($query->execute()) {
-            $id_ultimo = $dbm_mysql->lastInsertId();
-            $datos['libreria'] = __DIR__ . '/../plugins/PHPMailer-master/PHPMailerAutoload.php';
-            $datos['asunto'] = 'Reserva de sala Unicatólica exitosa # ' . $id_ultimo;
-			$datos['email_enviar'] = nombre_usuarios($id_usuario, $dbm_mysql)['email'];
-            if (id_rol($id_usuario, $dbm_mysql)['id_rol'] == 2) {
-                $datos['detalle'] = "
-                Usted realizó con éxito la reserva de la sala $nombre_sede - $detalle_sala para la fecha $fecha_reserva en el horario $hora_inicio - $hora_fin.
-                <br>
-                ¡Recuerde! Debe presentarse en el horario establecido para realizar la confirmación de la misma, ya que puede realizarse una cancelación automática después de 30 minutos.
-                <br>
-                Favor no responder a este correo ya que fue generado automáticamente por el sistema.
-                ";
+		$query = $dbm_mysql->prepare($sql);
+		$query->execute();
+		$cont_registro = array_asociativo($query);
+		if ($cont_registro[0]['cont'] == 0) {
+            $id_usuario = $data['data']['id_usuario'];
+            $detalle = "La reserva ha sido generada de manera exitosa, los datos de la reserva son los siguientes: 
+            $detalle_sala
+            Sede: $nombre_sede 
+            Fecha inicio: $fecha_reserva $hora_inicio - Fecha Fin: $fecha_reserva $hora_fin
+            Docente: $nombredocente ";
+            $sql = "INSERT INTO 
+                        reservas
+                            ( estado, id_sede, id_usuario_creacion, id_sala, fecha_reserva, hora_reserva_inicio, hora_reserva_fin, observacion_reserva, asignatura, id_usuario) 
+                        VALUES 
+                            ('1','$id_sede','$id_usuario','$id_sala','$fecha_reserva','$hora_inicio','$hora_fin','Observacion: $detalle','$nombre_asignatura',$id_docente)";
+            $query = $dbm_mysql->prepare($sql);
+            if ($query->execute()) {
+                $id_ultimo = $dbm_mysql->lastInsertId();
+                $datos['libreria'] = __DIR__ . '/../plugins/PHPMailer-master/PHPMailerAutoload.php';
+                $datos['asunto'] = 'Reserva de sala Unicatólica exitosa # ' . $id_ultimo;
+                $datos['email_enviar'] = nombre_usuarios($id_usuario, $dbm_mysql)['email'];
+                if (id_rol($id_usuario, $dbm_mysql)['id_rol'] == 2) {
+                    $datos['detalle'] = "
+                    Usted realizó con éxito la reserva de la sala $nombre_sede - $detalle_sala para la fecha $fecha_reserva en el horario $hora_inicio - $hora_fin.
+                    <br>
+                    ¡Recuerde! Debe presentarse en el horario establecido para realizar la confirmación de la misma, ya que puede realizarse una cancelación automática después de 30 minutos.
+                    <br>
+                    Favor no responder a este correo ya que fue generado automáticamente por el sistema.
+                    ";
+                } else {
+                    $datos['detalle'] = "
+                    El personal administrativo realizó con éxito la reserva de la sala $nombre_sede - $detalle_sala para la fecha $fecha_reserva en el horario $hora_inicio - $hora_fin.
+                    <br>
+                    ¡Recuerde! Debe presentarse en el horario establecido para realizar la confirmación de la misma, ya que puede realizarse una cancelación automática después de 30 minutos.
+                    <br>
+                    Favor no responder a este correo ya que fue generado automáticamente por el sistema.";
+                }
+                enviar_mail_rese($datos);
+                $response = array('mensaje' => 'ok', 'numero_reserva' => $id_ultimo, 'title' => 'Reserva exitosa #' . $id_ultimo .' - RESERVADO', 'description' => $detalle_sala . '. Docente: ' . $nombredocente . ' . Asignatura: ' . $nombre_asignatura, 'location' => 'Sede: ' . $nombre_sede);
             } else {
-                $datos['detalle'] = "
-                El personal administrativo realizó con éxito la reserva de la sala $nombre_sede - $detalle_sala para la fecha $fecha_reserva en el horario $hora_inicio - $hora_fin.
-                <br>
-                ¡Recuerde! Debe presentarse en el horario establecido para realizar la confirmación de la misma, ya que puede realizarse una cancelación automática después de 30 minutos.
-                <br>
-                Favor no responder a este correo ya que fue generado automáticamente por el sistema.";
+                $response = array('mensaje' => 'Error al generar la reserva',);
             }
-            enviar_mail_rese($datos);
-            $response = array('mensaje' => 'ok', 'numero_reserva' => $id_ultimo, 'title' => 'Reserva exitosa #' . $id_ultimo, 'description' => $detalle_sala . '. Docente: ' . $nombredocente . ' . Asignatura: ' . $nombre_asignatura, 'location' => 'Sede: ' . $nombre_sede);
-        } else {
-            $response = array('mensaje' => 'no',);
+        }else{
+            $response = array('mensaje' => 'La sala se encuentra ocupada con otra reserva',);
+
         }
+
+        
     }
     echo json_encode($response);
 } else {

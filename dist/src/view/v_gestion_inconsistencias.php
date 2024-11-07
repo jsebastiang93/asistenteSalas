@@ -42,7 +42,7 @@
                                                 if (!(empty($salas))) {
                                                     foreach ($salas as $key) {
                                                 ?>
-                                                        <option value="<?= $key['id'] ?>"><?= $key['nombre'] ?></option>
+                                                        <option value="<?= $key['id'] ?>"><?= $key['nombre'] . ' - '. $key['nombre_sede'] ?></option>
                                                 <?php
                                                     }
                                                 }
@@ -69,7 +69,7 @@
                         <thead>
                             <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
                                 <th class="min-w-185px"></th>
-                                <th class="min-w-185px"># Reserva</th>
+                                <th class="min-w-185px">#</th>
                                 <th class="min-w-125px">Estado</th>
                                 <th class="min-w-125px">Fecha creacion</th>
                                 <th class="min-w-125px">Usuario creacion </th>
@@ -81,14 +81,14 @@
                                 <td>Opciones</td>
                             </tr>
                         </thead>
-                        <tbody class="fw-bold text-gray-600">
+                        <tbody class="fw-bold ">
                             <?php
                             if (!empty($reservas_inconsistencias)) {
                                 foreach ($reservas_inconsistencias as $fila) {
                             ?>
                                     <tr>
                                         <th class="min-w-50px"></th>
-                                        <th class="min-w-50px"><?php echo $fila['id_reserva'] ?></th>
+                                        <th class="min-w-50px"><?php echo $fila['id'] ?></th>
                                         <th class="min-w-50px">
                                             <?php
                                             if ($fila['estado'] == 1) {
@@ -215,14 +215,7 @@
                                         <div class="col-12 mb-10">
                                             <label class="required fs-5 fw-bold mb-2">Seleccione sala</label>
                                             <select required name="id_sala_c" id="id_sala_c" class="form-select form-select-lg mb-3">
-                                                <option value="0" selected>Seleccione ...</option>
-                                                <?php
-                                                foreach ($salas as $key) {
-                                                ?>
-                                                    <option value="<?php echo $key['id'] ?>"><?php echo $key['nombre'] ?></option>
-                                                <?php
-                                                }
-                                                ?>
+                                                
                                             </select>
                                         </div>
                                     </div>

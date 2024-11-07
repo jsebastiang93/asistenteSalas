@@ -76,12 +76,12 @@
                                 <th class="min-w-125px">Acción</th>
                             </tr>
                         </thead>
-                        <tbody class="fw-bold text-gray-600">
+                        <tbody class="fw-bold ">
                             <?php
                             if (!empty($salas2)) {
                                 foreach ($salas2 as $fila) {
                             ?>
-                                    <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
+                                    <tr >
                                         <td class="min-w-185px"></td>
                                         <td class="min-w-185px"><?php echo $fila['nombre_sede']  ?></td>
                                         <td class="min-w-185px"><?php echo $fila['nombre']  ?></td>

@@ -67,7 +67,7 @@
                                 <td>Opciones</td>
                             </tr>
                         </thead>
-                        <tbody class="fw-bold text-gray-600">
+                        <tbody class="fw-bold ">
                             <?php
                             if (!empty($usuarios)) {
                                 foreach ($usuarios as $fila) {
@@ -149,7 +149,7 @@
                                                                     </div>
                                                                     <div class="col-6 mb-10">
                                                                         <label class="required fs-5 fw-bold mb-2">Email</label>
-                                                                        <input required name="email" type="email" class="form-control form-control-solid" id="email" value="<?php echo $fila['email'] ?>">
+                                                                        <input required name="email" type="email" class="form-control form-control-solid" id="email" pattern=".+@unicatolica\.edu\.co" value="<?php echo $fila['email'] ?>">
                                                                     </div>
                                                                     <div>
 

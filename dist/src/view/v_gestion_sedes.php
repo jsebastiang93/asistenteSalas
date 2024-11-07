@@ -73,7 +73,7 @@
                                 <th class="min-w-185px">Opciones</th>
                             </tr>
                         </thead>
-                        <tbody class="fw-bold text-gray-600">
+                        <tbody class="fw-bold ">
                             <?php
                             if (!empty($sedes)) {
                                 foreach ($sedes as $fila) {
