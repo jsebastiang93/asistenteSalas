@@ -108,60 +108,75 @@ if ($formulario == "crear_reserva_masiva") {
 	$nombre_asignatura = variable_exterior("nombre_asignatura_masivo");
 	$nombre_dia = variable_exterior("nombre_dia");
 	$id_usuario = $_SESSION['id_usuario'];
-	// Definir el rango de fechas
-	$startDate = new DateTime($inicio_reserva); // Fecha de inicio
-	$endDate = new DateTime($fin_reserva);   // Fecha de fin
 
-	// Añadir un día extra al final para incluir el 31 de diciembre
-	$endDate->modify('+1 day');
+	if (
+		$inicio_reserva != "" &&
+		$fin_reserva != "" &&
+		$hora_inicio_reserva != "" &&
+		$hora_fin_reserva != "" &&
+		$sede_masivo != "" &&
+		$sala_masivo != "" &&
+		$id_docente != "" &&
+		$nombre_asignatura != "" &&
+		$nombre_dia != "" &&
+		$id_usuario != ""
+	) {
+		# code...
 
-	// Array para almacenar los lunes
-	$errores = [];
-	$completado = 0;
-	$lunesReservas = [];
+		// Definir el rango de fechas
+		$startDate = new DateTime($inicio_reserva); // Fecha de inicio
+		$endDate = new DateTime($fin_reserva);   // Fecha de fin
 
-	// Iterar sobre el rango de fechas
-	while ($startDate < $endDate) {
-		// Verificar si el día es lunes (1 = Lunes en PHP)
-		if ($startDate->format('N') == $nombre_dia) {
-			// Guardar la fecha de lunes
-			$lunesReservas[] = $startDate->format('Y-m-d');
+		// Añadir un día extra al final para incluir el 31 de diciembre
+		$endDate->modify('+1 day');
+
+		// Array para almacenar los lunes
+		$errores = [];
+		$completado = 0;
+		$lunesReservas = [];
+
+		// Iterar sobre el rango de fechas
+		while ($startDate < $endDate) {
+			// Verificar si el día es lunes (1 = Lunes en PHP)
+			if ($startDate->format('N') == $nombre_dia) {
+				// Guardar la fecha de lunes
+				$lunesReservas[] = $startDate->format('Y-m-d');
+			}
+			// Avanzar un día
+			$startDate->modify('+1 day');
 		}
-		// Avanzar un día
-		$startDate->modify('+1 day');
-	}
 
-	$nombre_dia_semana = "";
-	switch ($nombre_dia) {
-		case '1':
-			$nombre_dia_semana = 'LUNES';
-			break;
-		case '2':
-			$nombre_dia_semana = 'MARTES';
-			break;
-		case '3':
-			$nombre_dia_semana = 'MIÉRCOLES';
-			break;
-		case '4':
-			$nombre_dia_semana = 'JUEVES';
-			break;
-		case '5':
-			$nombre_dia_semana = 'VIERNES';
-			break;
-		case '6':
-			$nombre_dia_semana = 'SABADO';
-			break;
+		$nombre_dia_semana = "";
+		switch ($nombre_dia) {
+			case '1':
+				$nombre_dia_semana = 'LUNES';
+				break;
+			case '2':
+				$nombre_dia_semana = 'MARTES';
+				break;
+			case '3':
+				$nombre_dia_semana = 'MIÉRCOLES';
+				break;
+			case '4':
+				$nombre_dia_semana = 'JUEVES';
+				break;
+			case '5':
+				$nombre_dia_semana = 'VIERNES';
+				break;
+			case '6':
+				$nombre_dia_semana = 'SABADO';
+				break;
 
-		default:
-			# code...
-			break;
-	}
+			default:
+				# code...
+				break;
+		}
 
-	// Imprimir los lunes del rango
-	foreach ($lunesReservas as $fecha_dia) {
-		// echo "Reserva para el lunes: $fecha_dia\n";
+		// Imprimir los lunes del rango
+		foreach ($lunesReservas as $fecha_dia) {
+			// echo "Reserva para el lunes: $fecha_dia\n";
 
-		$sql = "SELECT 
+			$sql = "SELECT 
                     COUNT(*) AS cont
                 FROM 
                     salas
@@ -173,63 +188,70 @@ if ($formulario == "crear_reserva_masiva") {
                 WHERE salas.id_sede = '$sede_masivo' 
 				AND reservas.id_sala = '$sala_masivo' ";
 
-		$query = $dbm->prepare($sql);
-		$query->execute();
-		$cont_registro = array_asociativo($query);
-		if ($cont_registro[0]['cont'] == 0) {
-			// PUEDE AGENDAR 
-			$nombre_sala = nombre_sala($sala_masivo, $dbm)['nombre'];
-			$nombre_sede = nombre_sede($sede_masivo, $dbm)['nombre'];
-			$nombredocente = nombre_usuarios($id_docente, $dbm)['nombres'] . nombre_usuarios($id_docente, $dbm)['apellidos'];
-			$datos['email_enviar'] = nombre_usuarios($id_docente, $dbm)['email'];
+			$query = $dbm->prepare($sql);
+			$query->execute();
+			$cont_registro = array_asociativo($query);
+			if ($cont_registro[0]['cont'] == 0) {
+				// PUEDE AGENDAR 
+				$nombre_sala = nombre_sala($sala_masivo, $dbm)['nombre'];
+				$nombre_sede = nombre_sede($sede_masivo, $dbm)['nombre'];
+				$nombredocente = nombre_usuarios($id_docente, $dbm)['nombres'] . nombre_usuarios($id_docente, $dbm)['apellidos'];
+				$datos['email_enviar'] = nombre_usuarios($id_docente, $dbm)['email'];
 
-			$detalle = "La reserva ha sido generada de manera exitosa, los datos de la reserva son los siguientes: 
+				$detalle = "La reserva ha sido generada de manera exitosa, los datos de la reserva son los siguientes: 
 			$nombre_sala
 			Sede: $nombre_sede 
 			Fecha inicio: $fecha_dia $hora_inicio_reserva - Fecha Fin: $fecha_dia $hora_fin_reserva
 			Docente: $nombredocente ";
-			$sql = "INSERT INTO 
+				$sql = "INSERT INTO 
 					reservas
 						( estado, id_sede, id_usuario_creacion, id_sala, fecha_reserva, hora_reserva_inicio, hora_reserva_fin, observacion_reserva, asignatura, id_usuario) 
 					VALUES 
 						('1','$sede_masivo','$id_usuario','$sala_masivo','$fecha_dia','$hora_inicio_reserva','$hora_fin_reserva','Observacion: $detalle','$nombre_asignatura',$id_docente)";
-			$query = $dbm->prepare($sql);
-			if ($query->execute()) {
-				$completado++;
+				$query = $dbm->prepare($sql);
+				if ($query->execute()) {
+					$completado++;
+				} else {
+					var_dump("errorrrrrrrrrrrrrrrrr");
+					die;
+				}
 			} else {
-				var_dump("errorrrrrrrrrrrrrrrrr");
-				die;
+				$errores[] = " Para el dia $fecha_dia no se pudo agendar en el horario de $hora_inicio_reserva - $hora_fin_reserva debido a que se encuentra ocupada";
 			}
-		} else {
-			$errores[] = " Para el dia $fecha_dia no se pudo agendar en el horario de $hora_inicio_reserva - $hora_fin_reserva debido a que se encuentra ocupada";
 		}
-	}
-	if (empty($errores)) {
-		$mensaje = "Se generaron $completado reservas para el día seleccionado";
+		if (empty($errores)) {
+			$mensaje = "Se generaron $completado reservas para el día seleccionado";
 ?>
-		<script>
-			alert("<?php echo $mensaje ?>");
-		</script>
-	<?php } else {
+			<script>
+				alert("<?php echo $mensaje ?>");
+			</script>
+		<?php } else {
 
-		$errores_string = implode(", ", $errores);
-		$mensaje = "Se generaron  $completado reservas para el día seleccionado, sin embargo se tuvieron los siguientes inconvenientes: " . $errores_string;
-	?>
-		<script>
-			alert("<?php echo $mensaje ?>");
-		</script>
-<?php };
-	$datos['libreria'] = 'src/plugins/PHPMailer-master/PHPMailerAutoload.php';
-	$datos['asunto'] = 'Reserva de sala Unicatólica masiva exitosa';
+			$errores_string = implode(", ", $errores);
+			$mensaje = "Se generaron  $completado reservas para el día seleccionado, sin embargo se tuvieron los siguientes inconvenientes: " . $errores_string;
+		?>
+			<script>
+				alert("<?php echo $mensaje ?>");
+			</script>
+		<?php };
+		$datos['libreria'] = 'src/plugins/PHPMailer-master/PHPMailerAutoload.php';
+		$datos['asunto'] = 'Reserva de sala Unicatólica masiva exitosa';
 
-	$datos['detalle'] = "
+		$datos['detalle'] = "
 	  El personal administrativo realizó con éxito la reserva de la sala $nombre_sede - $nombre_sala  para los días $nombre_dia_semana en el rango de fechas $inicio_reserva a $fin_reserva y en el horario $hora_inicio_reserva a $hora_fin_reserva.
 	<br>
 	¡Recuerde! Debe presentarse en el horario establecido para realizar la confirmación de la misma, ya que puede realizarse una cancelación automática después de 30 minutos.
 	<br>
 	Favor no responder a este correo ya que fue generado automáticamente por el sistema";
 
-	enviar_mail_rese($datos);
+		enviar_mail_rese($datos);
+	} else {
+		?>
+		<script>
+			alert("Alguno de los campos se encuentran vacios");
+		</script>
+<?php
+	}
 }
 
 function validarfecha_hora($fecha, $horario)
