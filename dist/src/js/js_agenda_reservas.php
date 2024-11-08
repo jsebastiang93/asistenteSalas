@@ -943,48 +943,6 @@
                     const selectOrdenes = document.getElementById('sala_masivo');
 
                     // Agrega una opción vacía
-                    const optionVacia = document.createElement('option');
-                    optionVacia.value = ''; // Valor vacíoservicio
-                    optionVacia.textContent = 'Selecciona una sala'; // Texto para la opción vacía
-                    selectOrdenes.appendChild(optionVacia);
-
-                    // Itera sobre las órdenes y agrega opciones al select
-                    datos_salas.forEach(sala => {
-                        const option = document.createElement('option');
-                        option.value = sala.id; // Puedes usar otro campo según tus necesidades
-                        option.textContent = `${sala.nombre}`; // Puedes personalizar la etiqueta de la opción
-                        selectOrdenes.appendChild(option);
-                    });
-
-                }
-            });
-
-
-
-    });
-    $("#sede_masivo").on('focusout', function(e) {
-        $("#sala_masivo").empty();
-        var id_sede = document.getElementById("sede_masivo").value;
-        fetch('src/ajax/a_agenda_reservas.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    accion: 'consulta_salas',
-                    id_sede: id_sede
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // console.log(data.resultado);
-                if (data.mensaje == "ok") {
-
-                    const datos_salas = data.salas;
-                    console.log(datos_salas);
-                    const selectOrdenes = document.getElementById('sala_masivo');
-
-                    // Agrega una opción vacía
                     // const optionVacia = document.createElement('option');
                     // optionVacia.value = ''; // Valor vacíoservicio
                     // optionVacia.textContent = 'Selecciona una sala'; // Texto para la opción vacía
