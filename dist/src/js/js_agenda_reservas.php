@@ -58,6 +58,8 @@
 
             },
             A = () => {
+                console.log("2");
+
                 var e, t, n;
 
                 w.show(),
@@ -122,6 +124,7 @@
             },
             F = () => {
                 document.querySelector("#kt_calendar_event_view_button").addEventListener("click", (e => {
+                    console.log("1");
                     e.preventDefault(), C(), A()
                 }))
             },
@@ -351,7 +354,7 @@
                                         } else {
                                             Swal.fire({
                                                 title: "Error!!",
-                                                text: "La reserva no ha podido ser generada de manera exitosa",
+                                                text: data.mensaje,
                                                 icon: "error"
                                             });
                                         }
@@ -384,6 +387,7 @@
                             C(), P(e), N()
                         },
                         eventClick: function(e) {
+                            console.log();
                             C(), P({
                                 id: e.event.id,
                                 title: e.event.title,
@@ -393,7 +397,18 @@
                                 endStr: e.event.endStr,
                                 allDay: e.event.allDay
                             }), A()
-                            // console.log("hola");
+
+                            var estado = ((e.event.title).split('-')[1]).trim();
+                            console.log(estado);
+                            if (estado == "RESERVADO") {
+                                document.getElementById("kt_modal_view_event_delete").style.display = 'block';
+                                if ('<?php echo $_SESSION['id_rol'] != 2 ?>') {
+                                    document.getElementById("kt_modal_view_event_confirm").style.display = 'block';
+                                }
+                            } else if (estado == "CONFIRMADA" || estado == "CANCELADA") {
+                                document.getElementById("kt_modal_view_event_delete").style.display = 'none';
+                                document.getElementById("kt_modal_view_event_confirm").style.display = 'none';
+                            }
 
                         },
                         eventMouseEnter: function(e) {
@@ -533,6 +548,17 @@
                                                 timer: 1500
                                             });
                                         } else {
+
+                                            Swal.fire({
+                                                title: 'Cargando...',
+                                                timerProgressBar: true,
+                                                onBeforeOpen: () => {
+                                                    Swal.showLoading();
+                                                },
+                                                allowOutsideClick: false,
+                                                allowEscapeKey: false
+                                            });
+
                                             var datos_agenda = x.eventName;
                                             var id_reserva = datos_agenda.split('#')[1];
                                             fetch('src/ajax/a_agenda_reservas.php', {
@@ -549,6 +575,7 @@
                                                 })
                                                 .then(response => response.json())
                                                 .then(data => {
+                                                    Swal.close();
                                                     // Manejar la respuesta del servidor aquí
                                                     if (data.mensaje == "ok") {
                                                         Swal.fire({
@@ -608,7 +635,17 @@
                             }
                         }).then((function(t) {
                             if (t.value === true) {
+
                                 isClickEventAttached = true;
+                                Swal.fire({
+                                    title: 'Cargando...',
+                                    timerProgressBar: true,
+                                    onBeforeOpen: () => {
+                                        Swal.showLoading();
+                                    },
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                });
 
                                 var datos_agenda = x.eventName;
                                 var id_reserva = datos_agenda.split('#')[1];
@@ -625,6 +662,7 @@
                                     })
                                     .then(response => response.json())
                                     .then(data => {
+                                        Swal.close();
                                         // Manejar la respuesta del servidor aquí
                                         if (data.mensaje == "ok") {
                                             Swal.fire({
@@ -789,7 +827,7 @@
                             }
                         }).then((function(e) {
                             e.value ? (p.reset(), v.hide()) : "cancel" === e.dismiss && Swal.fire({
-                                text: "No has cancelado larReserva!!!",
+                                text: "No has cancelado la Reserva!!!",
                                 icon: "error",
                                 buttonsStyling: !1,
                                 confirmButtonText: "Ok",
@@ -839,11 +877,11 @@
                     if (data.comentarios_concatenados[0].comentarios_concatenados) {
                         document.getElementById("alert_inconsis").style.display = 'block';
                         document.getElementById("text_alert_inconsis").innerHTML = data.comentarios_concatenados[0].comentarios_concatenados;
-                    }else{
+                    } else {
                         document.getElementById("alert_inconsis").style.display = 'none';
 
                     }
-                  
+
                 }
             });
 
@@ -870,11 +908,11 @@
                     if (data.comentarios_concatenados[0].comentarios_concatenados) {
                         document.getElementById("alert_inconsis_masivo").style.display = 'block';
                         document.getElementById("text_alert_inconsis_masivo").innerHTML = data.comentarios_concatenados[0].comentarios_concatenados;
-                    }else{
+                    } else {
                         document.getElementById("alert_inconsis_masivo").style.display = 'none';
 
                     }
-                  
+
                 }
             });
 
@@ -882,6 +920,90 @@
 
     });
 
+    $("#sede_masivo").on('focusout', function(e) {
+        $("#sala_masivo").empty();
+        var id_sede = document.getElementById("sede_masivo").value;
+        fetch('src/ajax/a_agenda_reservas.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    accion: 'consulta_salas',
+                    id_sede: id_sede
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // console.log(data.resultado);
+                if (data.mensaje == "ok") {
+
+                    const datos_salas = data.salas;
+                    console.log(datos_salas);
+                    const selectOrdenes = document.getElementById('sala_masivo');
+
+                    // Agrega una opción vacía
+                    const optionVacia = document.createElement('option');
+                    optionVacia.value = ''; // Valor vacíoservicio
+                    optionVacia.textContent = 'Selecciona una sala'; // Texto para la opción vacía
+                    selectOrdenes.appendChild(optionVacia);
+
+                    // Itera sobre las órdenes y agrega opciones al select
+                    datos_salas.forEach(sala => {
+                        const option = document.createElement('option');
+                        option.value = sala.id; // Puedes usar otro campo según tus necesidades
+                        option.textContent = `${sala.nombre}`; // Puedes personalizar la etiqueta de la opción
+                        selectOrdenes.appendChild(option);
+                    });
+
+                }
+            });
+
+
+
+    });
+    $("#sede_masivo").on('focusout', function(e) {
+        $("#sala_masivo").empty();
+        var id_sede = document.getElementById("sede_masivo").value;
+        fetch('src/ajax/a_agenda_reservas.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    accion: 'consulta_salas',
+                    id_sede: id_sede
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // console.log(data.resultado);
+                if (data.mensaje == "ok") {
+
+                    const datos_salas = data.salas;
+                    console.log(datos_salas);
+                    const selectOrdenes = document.getElementById('sala_masivo');
+
+                    // Agrega una opción vacía
+                    const optionVacia = document.createElement('option');
+                    optionVacia.value = ''; // Valor vacíoservicio
+                    optionVacia.textContent = 'Selecciona una sala'; // Texto para la opción vacía
+                    selectOrdenes.appendChild(optionVacia);
+
+                    // Itera sobre las órdenes y agrega opciones al select
+                    datos_salas.forEach(sala => {
+                        const option = document.createElement('option');
+                        option.value = sala.id; // Puedes usar otro campo según tus necesidades
+                        option.textContent = `${sala.nombre}`; // Puedes personalizar la etiqueta de la opción
+                        selectOrdenes.appendChild(option);
+                    });
+
+                }
+            });
+
+
+
+    });
 </script>
 
 <script>

@@ -24,6 +24,7 @@ if (isset($_POST['formulario'])) {
 //Crear sala
 if ($formulario == "crear_sala" && $formulario != "") {
 
+
     $nombre_sede = $_POST['id_sede'];
     $sala = $_POST['sala'];
     $observacion = $_POST['observacion'];
@@ -47,7 +48,13 @@ if ($formulario == "crear_sala" && $formulario != "") {
         $video = 'no';
     }
 
-    $sql = "INSERT INTO salas (
+    $sql = "SELECT COUNT(*) as cont FROM salas WHERE nombre = '$sala' AND id_sede = '$nombre_sede'";
+    $query = $dbm->prepare($sql);
+    $query->execute();
+    $cont = array_asociativo($query)[0]['cont'];
+    if ($cont == 0) {
+
+        $sql = "INSERT INTO salas (
         nombre, 
         estado, 
         id_sede, 
@@ -55,7 +62,9 @@ if ($formulario == "crear_sala" && $formulario != "") {
         capacidad_estudiantes, 
         aire_acondicionado, 
         video_beam, 
-        observacion
+        observacion,
+        usuario_creacion,
+        fecha_creacion
 
     ) VALUES (
         '$sala',
@@ -65,41 +74,67 @@ if ($formulario == "crear_sala" && $formulario != "") {
          '$numero_estudiantes',
          '$aire',
          '$video',
-         '$observacion'   
+         '$observacion',
+         '" . $_SESSION['id_usuario'] . "',
+         NOW()
+
          )";
 
-    $query = $dbm->prepare($sql);
-    if ($query->execute()) {
-        // EJECUTÓ BIEN
+        $query = $dbm->prepare($sql);
+        if ($query->execute()) {
+            // EJECUTÓ BIEN
 ?>
-        <script>
-            Swal.fire({
-                title: "Good job!",
-                text: "You clicked the button!",
-                icon: "success"
-            });
-        </script>
+            <script>
+                alert("La sala se insertó correctamente ");
+            </script>
 
-    <?php
+        <?php
+        } else {
+            // ERROR DOS
+        ?>
+            <script>
+                alert("Error! La Sala no se Creo correctamente");
+            </script>
+
+        <?php
+        }
     } else {
-        // ERROR DOS
-    ?>
+        ?>
         <script>
-            alert("Error! La Sala no se Creo correctamente");
+            alert("Error! La Sala ya existe con ese nombre");
         </script>
 
-    <?php
+        <?php
     }
+}
+
+
+if ($formulario == "consultar_salas") {
+    # code...
+    $comodin = "";
+
+    $nombre = $_POST['nombre'];
+    $comodin_nombre = "";
+    if ($nombre != "") {
+        $comodin_nombre = " AND salas.nombre = '$nombre'";
+        $comodin .= $comodin_nombre;
+    }
+    $sql = "SELECT salas.*,sedes.nombre AS nombre_sede FROM `salas`,`sedes` WHERE salas.id_sede=sedes.id $comodin";
+    $query = $dbm->prepare($sql);
+    $query->execute();
+    $salas2 = array_asociativo($query);
+} else if ($formulario != "consultar_salas") {
+    $sql = "SELECT salas.*,sedes.nombre AS nombre_sede FROM `salas`,`sedes` WHERE salas.id_sede=sedes.id";
+    $query = $dbm->prepare($sql);
+    $query->execute();
+    $salas2 = array_asociativo($query);
 }
 
 //Consultar Salas
 
 //if ($formulario == "crear_sala" && $formulario != "") {
 
-$sql = "SELECT salas.*,sedes.nombre AS nombre_sede FROM `salas`,`sedes` WHERE salas.id_sede=sedes.id";
-$query = $dbm->prepare($sql);
-$query->execute();
-$salas2 = array_asociativo($query);
+
 //}
 
 //Actualizar Sala
@@ -136,10 +171,16 @@ if ($formulario == "actualizar_sala" && $formulario != "") {
         $estado = 'Inactivo';
     }
 
-    $sql = "UPDATE salas SET 
+    $sql = "SELECT COUNT(*) as cont FROM salas WHERE nombre = '$sala' AND id_sede = '$nombre_sede'";
+    $query = $dbm->prepare($sql);
+    $query->execute();
+    $cont = array_asociativo($query)[0]['cont'];
+    if ($cont == 0) {
+
+
+        $sql = "UPDATE salas SET 
     nombre = '$sala', 
     estado = '$estado',
-    id_sede = '$nombre_sede',
     bloque = '$bloque',
     capacidad_estudiantes = '$numero_estudiantes',
     aire_acondicionado = '$aire',
@@ -147,18 +188,26 @@ if ($formulario == "actualizar_sala" && $formulario != "") {
     observacion = '$observacion'
     WHERE id ='$id' ";
 
-    $query = $dbm->prepare($sql);
+        $query = $dbm->prepare($sql);
 
-    if ($query->execute()) {
-    ?>
-        <script>
-            alert("La Sala se Actualizo Correctamente");
-        </script>
-    <?php
+        if ($query->execute()) {
+        ?>
+            <script>
+                alert("La Sala se Actualizo Correctamente");
+            </script>
+        <?php
+        } else {
+        ?>
+            <script>
+                alert("Error! La sala no fue actualizada correctamente");
+            </script>
+
+        <?php
+        }
     } else {
-    ?>
+        ?>
         <script>
-            alert("Error! La sala no fue actualizada correctamente");
+            alert("Error! La Sala ya existe con ese nombre");
         </script>
 
 <?php

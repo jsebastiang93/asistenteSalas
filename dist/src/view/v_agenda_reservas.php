@@ -40,7 +40,7 @@
 						&nbsp;
 						&nbsp;
 						<a href="#" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#kt_modal_create_api_key">
-							Cargue Masivo
+							Generar Reservas Masivas
 						</a>
 					</div>
 				</div>
@@ -95,10 +95,7 @@
 											<label class="fs-6 fw-bold mb-2 required">Sala:</label>
 											<!-- <input class="form-control form-control-solid" min="0" placeholder="Documento Paciente" type="text" id="kt_modal_add_event_cedula_paciente" name="calendar_event_description"> -->
 											<select required class="form-select form-select-solid fw-bolder" data-placeholder="Select option" id="kt_modal_add_event_cedula_paciente" name="calendar_event_description">
-												<option value="" selected>Seleccionar sala </option>
-												<option value="Sala 1">Sala 1</option>
-												<option value="Sala 2 piso 1">Sala 2 piso 1</option>
-												<option value="Sala 4 piso 2">Sala 4 piso 2</option>
+												
 											</select>
 										</div>
 									</div>
@@ -186,6 +183,7 @@
 									</div>
 									<div class="row">
 										<?php
+										var_dump($_SESSION['id_rol']);
 										if ($_SESSION['id_rol'] == 2) {
 										?>
 											<input type="hidden" name="id_docente" name="id_docente" value="<?php echo $_SESSION['id_usuario'] ?>">
@@ -252,7 +250,7 @@
 							</div>
 							<!--end::Edit-->
 							<!--begin::Edit-->
-							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-danger me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Eliminar Reserva" id="kt_modal_view_event_delete">
+							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-danger me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Eliminar Reserva" id="kt_modal_view_event_delete"  style="display: none;">
 								<!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
 								<span class="svg-icon svg-icon-2">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -263,7 +261,7 @@
 								</span>
 								<!--end::Svg Icon-->
 							</div>
-							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-success me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Confirmar Reserva" id="kt_modal_view_event_confirm">
+							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-success me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Confirmar Reserva" id="kt_modal_view_event_confirm" style="display: none;">
 								<!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
 								<span class="svg-icon svg-icon-success svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo1/dist/../src/media/svg/icons/Navigation/Double-check.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 										<title>Stockholm-icons / Navigation / Double-check</title>
@@ -414,7 +412,7 @@
 		<div class="modal-dialog modal-dialog-centered mw-650px">
 			<div class="modal-content">
 				<div class="modal-header" id="kt_modal_create_api_key_header">
-					<h2>Crear Usuario</h2>
+					<h2>Crear Reserva Masiva</h2>
 					<div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
 						<span class="svg-icon svg-icon-1">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -449,16 +447,7 @@
 						<div class="col col-sm-4">
 							<label class="fs-6 fw-bold mb-2 required">Sala:</label>
 							<select required class="form-select form-select-solid fw-bolder" data-dropdown-parent="#kt_modal_create_api_key" data-placeholder="Select option" id="sala_masivo" name="sala_masivo">
-								<option value="" selected>Seleccionar sala </option>
-								<?php
-								if (!(empty($salas))) {
-									foreach ($salas as $key) {
-								?>
-										<option value="<?= $key['id'] ?>"><?= $key['nombre'] ?></option>
-								<?php
-									}
-								}
-								?>
+								
 							</select>
 						</div>
 						<div class="col col-sm-4">

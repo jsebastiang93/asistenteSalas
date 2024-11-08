@@ -79,6 +79,7 @@ ini_set('display_errors', '1');
 			} else {
 			?>
 				<script type="text/javascript">
+					alert("El usuario o contraseña es inválido");
 					javascript: history.back(1);
 				</script>
 			<?php
@@ -86,7 +87,8 @@ ini_set('display_errors', '1');
 		} else {
 			?>
 			<script type="text/javascript">
-				javascript: history.back(1);
+					alert("El usuario o contraseña es inválido");
+					javascript: history.back(1);
 			</script>
 	<?php
 
