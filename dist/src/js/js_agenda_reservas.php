@@ -985,10 +985,10 @@
                     const selectOrdenes = document.getElementById('sala_masivo');
 
                     // Agrega una opción vacía
-                    const optionVacia = document.createElement('option');
-                    optionVacia.value = ''; // Valor vacíoservicio
-                    optionVacia.textContent = 'Selecciona una sala'; // Texto para la opción vacía
-                    selectOrdenes.appendChild(optionVacia);
+                    // const optionVacia = document.createElement('option');
+                    // optionVacia.value = ''; // Valor vacíoservicio
+                    // optionVacia.textContent = 'Selecciona una sala'; // Texto para la opción vacía
+                    // selectOrdenes.appendChild(optionVacia);
 
                     // Itera sobre las órdenes y agrega opciones al select
                     datos_salas.forEach(sala => {
