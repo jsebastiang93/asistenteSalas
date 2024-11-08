@@ -226,9 +226,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Docente: $nombredocente ";
             $sql = "INSERT INTO 
                         reservas
-                            ( estado, id_sede, id_usuario_creacion, id_sala, fecha_reserva, hora_reserva_inicio, hora_reserva_fin, observacion_reserva, asignatura, id_usuario) 
+                            ( estado, id_sede, id_usuario_creacion, id_sala, fecha_reserva, hora_reserva_inicio, hora_reserva_fin, observacion_reserva, asignatura, id_usuario, fecha_creacion) 
                         VALUES 
-                            ('1','$id_sede','$id_usuario','$id_sala','$fecha_reserva','$hora_inicio','$hora_fin','Observacion: $detalle','$nombre_asignatura',$id_docente)";
+                            ('1','$id_sede','$id_usuario','$id_sala','$fecha_reserva','$hora_inicio','$hora_fin','Observacion: $detalle','$nombre_asignatura',$id_docente,'$fecha_hora_hoy')";
             $query = $dbm_mysql->prepare($sql);
             if ($query->execute()) {
                 $id_ultimo = $dbm_mysql->lastInsertId();
