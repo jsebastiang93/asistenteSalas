@@ -171,6 +171,7 @@ if ($formulario == "crear_reserva_masiva") {
 				# code...
 				break;
 		}
+	$sede_masivo = explode('/', $sede_masivo)[0];
 
 		// Imprimir los lunes del rango
 		foreach ($lunesReservas as $fecha_dia) {
