@@ -290,9 +290,11 @@
                                     onBeforeOpen: () => {
                                         Swal.showLoading();
                                     },
-                                    allowOutsideClick: false,
-                                    allowEscapeKey: false
+                                    allowOutsideClick: false, // No permitir cerrar al hacer clic fuera
+                                    allowEscapeKey: false, // No permitir cerrar con la tecla Escape
+                                    showConfirmButton: false, // Ocultar el botón "OK"
                                 });
+                                document.getElementById("kt_modal_add_event_submit").disabled = true;
 
                                 fetch('src/ajax/a_agenda_reservas.php', {
                                         method: 'POST',
@@ -309,6 +311,8 @@
                                         Swal.close();
                                         // console.log(data.resultado);
                                         if (data.mensaje == "ok") {
+                                            document.getElementById("kt_modal_add_event_submit").disabled = false;
+                                          
                                             // Swal.fire('¡Cita generada!!', 'La cita se ha generado exitosamente', 'success');
                                             setTimeout((function() {
                                                 _.removeAttribute("data-kt-indicator"), Swal.fire({
