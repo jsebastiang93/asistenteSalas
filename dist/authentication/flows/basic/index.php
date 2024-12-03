@@ -8,7 +8,7 @@ header('Strict-Transport-Security max-age=31536000');
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
+<!-- PRUEBA DD-->
 <head>
 	<base href="../../../">
 	<meta charset="UTF-8">

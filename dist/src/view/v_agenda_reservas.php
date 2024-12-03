@@ -21,62 +21,8 @@
 							<div class="max-height-300px overflow-y-auto scroll-y mh-325px">
 								<form class="form" action="?url_id=agenda_reservas" method="POST" id="filtrar" name="filtrar">
 									<div class="px-7 py-5">
-										<div class="mb-10">
-											<label class="form-label fs-5 fw-bold mb-3 required">Seleccionar Sede:</label>
-										</div>
-										<div class="mb-10">
-											<label class="form-label fs-5 fw-bold mb-3 ">Seleccionar Empresa:</label>
-										</div>
-										<div class="mb-10">
-											<label class="form-label fs-5 fw-bold mb-3 ">Seleccionar Estado:</label>
-											<select class="form-select form-select-solid fw-bolder " data-kt-select2="true" data-placeholder="Seleccione Estado" data-allow-clear="true" data-kt-customer-table-filter="estado" id="estado" name="estado" data-dropdown-parent="#kt-toolbar-filter">
-												<option value="" selected> Seleccione Estado</option>
-												<option value="pen">PENDIENTE</option>
-												<option value="asi">ASISTIÓ</option>
-												<option value="con">CONFIRMADA</option>
-											</select>
-										</div>
-										<div class="mb-10">
-											<label class="form-label fs-5 fw-bold mb-3 ">Personal que creó el registro:</label>
-											<select class="form-select form-select-solid fw-bolder " data-kt-select2="true" data-placeholder="Seleccione Personal" data-allow-clear="true" data-kt-customer-table-filter="personal" id="personal" name="personal" data-dropdown-parent="#kt-toolbar-filter">
-											</select>
-										</div>
-										<div class="form-group mb-6">
-											<div class="mb-0">
-												<label class="form-label">Documento</label>
-												<input id="documento" name="documento" type="text" class="form-control form-control-solid" placeholder="Documento" id="kt_daterangepicker_3" />
-											</div>
-										</div>
-										<h5 align="center">Fecha de la cita</h5>
-										<div class="form-group mb-6">
-											<div class="mb-0">
-												<label class="form-label">Inicial</label>
-												<input id="fechaini_cita" name="fechaini_cita" type="date" class="form-control form-control-solid" placeholder="Pick date rage" id="kt_daterangepicker_3" />
-											</div>
-										</div>
-										<div class="form-group mb-6">
-											<div class="mb-0">
-												<label class="form-label">Final</label>
-												<input id="fechafin_cita" name="fechafin_cita" type="date" class="form-control form-control-solid" placeholder="Pick date rage" id="kt_daterangepicker_3" />
-											</div>
-										</div>
-										<h5 align="center">Fecha de creación</h5>
-										<div class="form-group mb-6">
-											<div class="mb-0">
-												<label class="form-label">Inicial</label>
-												<input id="fechaini_crea" name="fechaini_crea" type="date" class="form-control form-control-solid" placeholder="Pick date rage" id="kt_daterangepicker_3" />
-											</div>
-										</div>
-										<div class="form-group mb-6">
-											<div class="mb-0">
-												<label class="form-label">Final</label>
-												<input id="fechafin_crea" name="fechafin_crea" type="date" class="form-control form-control-solid" placeholder="Pick date rage" id="kt_daterangepicker_3" />
-											</div>
-										</div>
-										<div class="d-flex justify-content-end">
-											<input type="submit" name="enviar" class="btn btn-primary" value="Filtrar">
-											<input type="hidden" name="formulario" id="formulario" value="filtrar">
-										</div>
+
+
 									</div>
 								</form>
 							</div>
@@ -90,6 +36,12 @@
 							</span>
 							Generar Reserva
 						</button>
+						&nbsp;
+						&nbsp;
+						&nbsp;
+						<a href="#" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#kt_modal_create_api_key">
+							Generar Reservas Masivas
+						</a>
 					</div>
 				</div>
 				<div class="card-body">
@@ -131,7 +83,7 @@
 												<?php
 												foreach ($sedes as $key) {
 												?>
-													<option value="<?php echo $key['id'].'/'.$key['nombre'] ?>"><?php echo $key['nombre'] ?></option>
+													<option value="<?php echo $key['id'] . '/' . $key['nombre'] ?>"><?php echo $key['nombre'] ?></option>
 												<?php
 												}
 												?>
@@ -143,10 +95,7 @@
 											<label class="fs-6 fw-bold mb-2 required">Sala:</label>
 											<!-- <input class="form-control form-control-solid" min="0" placeholder="Documento Paciente" type="text" id="kt_modal_add_event_cedula_paciente" name="calendar_event_description"> -->
 											<select required class="form-select form-select-solid fw-bolder" data-placeholder="Select option" id="kt_modal_add_event_cedula_paciente" name="calendar_event_description">
-												<option value="" selected>Seleccionar sala </option>
-												<option value="Sala 1">Sala 1</option>
-												<option value="Sala 2 piso 1">Sala 2 piso 1</option>
-												<option value="Sala 4 piso 2">Sala 4 piso 2</option>
+												
 											</select>
 										</div>
 									</div>
@@ -214,31 +163,58 @@
 									</div>
 								</div>
 								<div id="crear_reserva" style="display: none;">
-								<input type="hidden" id="id_usuario" name="id_usuario" value="<?php echo $_SESSION['id_usuario']?>">
+									<input type="hidden" id="id_usuario" name="id_usuario" value="<?php echo $_SESSION['id_usuario'] ?>">
+									<div class="alert alert-custom alert-danger" role="alert" id="alert_inconsis" style="display: none;">
+										<div class="alert-icon">
+											<h2>¡Importante!</h2>
+											<div class="alert-text" id="text_alert_inconsis"></div>
+										</div>
+									</div>
 									<div class="row">
 										<div class="col col-sm-6">
-										<label class="form-label fs-5 fw-bold my-3 required "> Salas disponibles</label>
-											<select required class=" form-select form-select-solid" name="id_sala" id="id_sala" data-control="select2" data-close-on-select="false" data-placeholder="Salas disponibles" data-allow-clear="true" data-dropdown-parent="#kt_modal_add_event">
+											<label class="form-label fs-5 fw-bold my-3 required "> Salas disponibles</label>
+											<select required class=" form-select form-select-solid" name="id_sala" id="id_sala">
 											</select>
 										</div>
 										<div class="col col-sm-6">
-										<label class="form-label fs-5 fw-bold my-3 required"> Asignatura:</label>
-											<!-- <select required class=" form-select form-select-solid" name="id_asignatura" id="id_asignatura" data-control="select2" data-close-on-select="false" data-placeholder="Asignatura a dictar" data-allow-clear="true" data-dropdown-parent="#kt_modal_add_event">
-												<option value="" selected> Seleccione</option>
-												<?php
-												// foreach ($asignaturas as $key) {
-												?>
-													<option value="<?php echo $key['id'] .'/'.$key['nombre']?>"> <?php echo $key['nombre'] ?></option>
-												<?php
-												// }
-
-												?>
-											</select> -->
+											<label class="form-label fs-5 fw-bold my-3 required"> NRC - Descripción asignatura: </label>
 											<input type="text" id="id_asignatura" name="id_asignatura" class=" form-control">
 										</div>
 									</div>
+									<div class="row">
+										<?php
+										var_dump($_SESSION['id_rol']);
+										if ($_SESSION['id_rol'] == 2) {
+										?>
+											<input type="hidden" name="id_docente" name="id_docente" value="<?php echo $_SESSION['id_usuario'] ?>">
+										<?php
+										} else {
+										?>
+											<div class="col col-sm-12">
+												<label class="form-label fs-5 fw-bold my-3 required "> Docente asignado: </label>
+												<select required class=" form-select form-select-solid" name="id_docente" id="id_docente" data-control="select2" data-close-on-select="false" data-placeholder="Salas disponibles" data-allow-clear="true" data-dropdown-parent="#kt_modal_add_event">
+													<?php
+													if (!(empty($usuarios_lista))) {
+														foreach ($usuarios_lista as $key) {
+															if ($key['id_rol'] == 2) {
+													?>
+																<option value="<?= $key['id'] . '/**' . $key['nombres'] . ' ' . $key['apellidos'] ?>"><?= $key['nombres'] . ' ' . $key['apellidos'] ?></option>
+													<?php
+															}
+															# code...
+														}
+													}
 
+													?>
+												</select>
+											</div>
 
+										<?php
+										}
+
+										?>
+
+									</div>
 								</div>
 							</div>
 							<div class="modal-footer flex-center">
@@ -274,7 +250,7 @@
 							</div>
 							<!--end::Edit-->
 							<!--begin::Edit-->
-							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-danger me-2" style="display: none;" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Delete Event" id="kt_modal_view_event_delete">
+							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-danger me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Eliminar Reserva" id="kt_modal_view_event_delete"  style="display: none;">
 								<!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
 								<span class="svg-icon svg-icon-2">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -285,6 +261,37 @@
 								</span>
 								<!--end::Svg Icon-->
 							</div>
+							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-success me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Confirmar Reserva" id="kt_modal_view_event_confirm" style="display: none;">
+								<!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
+								<span class="svg-icon svg-icon-success svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo1/dist/../src/media/svg/icons/Navigation/Double-check.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+										<title>Stockholm-icons / Navigation / Double-check</title>
+										<desc>Created with Sketch.</desc>
+										<defs />
+										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+											<polygon points="0 0 24 0 24 24 0 24" />
+											<path d="M9.26193932,16.6476484 C8.90425297,17.0684559 8.27315905,17.1196257 7.85235158,16.7619393 C7.43154411,16.404253 7.38037434,15.773159 7.73806068,15.3523516 L16.2380607,5.35235158 C16.6013618,4.92493855 17.2451015,4.87991302 17.6643638,5.25259068 L22.1643638,9.25259068 C22.5771466,9.6195087 22.6143273,10.2515811 22.2474093,10.6643638 C21.8804913,11.0771466 21.2484189,11.1143273 20.8356362,10.7474093 L17.0997854,7.42665306 L9.26193932,16.6476484 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" transform="translate(14.999995, 11.000002) rotate(-180.000000) translate(-14.999995, -11.000002) " />
+											<path d="M4.26193932,17.6476484 C3.90425297,18.0684559 3.27315905,18.1196257 2.85235158,17.7619393 C2.43154411,17.404253 2.38037434,16.773159 2.73806068,16.3523516 L11.2380607,6.35235158 C11.6013618,5.92493855 12.2451015,5.87991302 12.6643638,6.25259068 L17.1643638,10.2525907 C17.5771466,10.6195087 17.6143273,11.2515811 17.2474093,11.6643638 C16.8804913,12.0771466 16.2484189,12.1143273 15.8356362,11.7474093 L12.0997854,8.42665306 L4.26193932,17.6476484 Z" fill="#000000" fill-rule="nonzero" transform="translate(9.999995, 12.000002) rotate(-180.000000) translate(-9.999995, -12.000002) " />
+										</g>
+									</svg><!--end::Svg Icon--></span>
+								<!--end::Svg Icon-->
+							</div>
+							<div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-success me-2" style="display: none;" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Inconsistencia" id="kt_modal_view_event_inconsistencia">
+								<!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
+								<span class="svg-icon svg-icon-primary svg-icon-2x"><!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2021-05-14-112058/theme/html/demo1/dist/../src/media/svg/icons/Code/Warning-2.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+										<title>Stockholm-icons / Code / Warning-2</title>
+										<desc>Created with Sketch.</desc>
+										<defs />
+										<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+											<rect x="0" y="0" width="24" height="24" />
+											<path d="M11.1669899,4.49941818 L2.82535718,19.5143571 C2.557144,19.9971408 2.7310878,20.6059441 3.21387153,20.8741573 C3.36242953,20.9566895 3.52957021,21 3.69951446,21 L21.2169432,21 C21.7692279,21 22.2169432,20.5522847 22.2169432,20 C22.2169432,19.8159952 22.1661743,19.6355579 22.070225,19.47855 L12.894429,4.4636111 C12.6064401,3.99235656 11.9909517,3.84379039 11.5196972,4.13177928 C11.3723594,4.22181902 11.2508468,4.34847583 11.1669899,4.49941818 Z" fill="#000000" opacity="0.3" />
+											<rect fill="#000000" x="11" y="9" width="2" height="7" rx="1" />
+											<rect fill="#000000" x="11" y="17" width="2" height="2" rx="1" />
+										</g>
+									</svg><!--end::Svg Icon--></span>
+								<!--end::Svg Icon-->
+							</div>
+
+
 							<!--end::Edit-->
 							<!--begin::Close-->
 							<div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Hide Event" data-bs-dismiss="modal">
@@ -320,6 +327,8 @@
 										</g>
 									</svg><!--end::Svg Icon-->
 								</span>
+
+
 								<!--end::Svg Icon-->
 								<!--end::Icon-->
 								<div class="mb-9">
@@ -399,7 +408,117 @@
 	</script> -->
 	<!-- <script src="assets/plugins/global/plugins.bundle.js"></script> -->
 
-	<!-- <script src="assets/js/custom/widgets.js"></script>
-	<script src="assets/js/custom/apps/chat/chat.js"></script>
-	<script src="assets/js/custom/modals/create-app.js"></script>
-	<script src="assets/js/custom/modals/upgrade-plan.js"></script> -->
+	<div class="modal fade" id="kt_modal_create_api_key" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered mw-650px">
+			<div class="modal-content">
+				<div class="modal-header" id="kt_modal_create_api_key_header">
+					<h2>Crear Reserva Masiva</h2>
+					<div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+						<span class="svg-icon svg-icon-1">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+								<rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black" />
+								<rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black" />
+							</svg>
+						</span>
+					</div>
+				</div>
+				<form id="crear_reserva_masiva" name="crear_reserva_masiva" class="form" method="POST" action="?url_id=agenda_reservas">
+					<input type="hidden" id="formulario" name="formulario" value="crear_reserva_masiva">
+					<div class="alert alert-custom alert-danger m-2 p-2" role="alert" id="alert_inconsis_masivo" style="display: none;">
+						<div class="alert-icon">
+							<h2>¡Importante!</h2>
+							<div class="alert-text" id="text_alert_inconsis_masivo"></div>
+						</div>
+					</div>
+					<div class="row m-2 ">
+						<div class="col col-sm-4">
+							<label class="fs-6 fw-bold required mb-2">Sede:</label>
+							<select required class="form-select form-select-solid fw-bolder" data-placeholder="Select option" id="sede_masivo" name="sede_masivo">
+								<option value="" selected>Seleccionar Sede </option>
+								<?php
+								foreach ($sedes as $key) {
+								?>
+									<option value="<?php echo $key['id'] . '/' . $key['nombre'] ?>"><?php echo $key['nombre'] ?></option>
+								<?php
+								}
+								?>
+							</select>
+						</div>
+						<div class="col col-sm-4">
+							<label class="fs-6 fw-bold mb-2 required">Sala:</label>
+							<select required class="form-select form-select-solid fw-bolder" data-dropdown-parent="#kt_modal_create_api_key" data-placeholder="Select option" id="sala_masivo" name="sala_masivo">
+								
+							</select>
+						</div>
+						<div class="col col-sm-4">
+							<label class="fs-6 fw-bold mb-2 required">Dia</label>
+							<select required class="form-select form-select-solid fw-bolder" data-placeholder="Select option" id="nombre_dia" name="nombre_dia">
+								<option value="" selected>Seleccionar dia </option>
+								<option value="1">Lunes</option>
+								<option value="2">Martes</option>
+								<option value="3">Miércoles</option>
+								<option value="4">Jueves</option>
+								<option value="5">Viernes</option>
+								<option value="6">Sábado</option>
+							</select>
+						</div>
+					</div>
+					<div class="row m-2 ">
+
+						<div class="col col-sm-6">
+							<div class="fv-row mb-9">
+								<label class="fs-6 fw-bold mb-2 required">Fecha Inicio reserva</label>
+								<input type="date" class="form-control form-control-solid" name="inicio_reserva" placeholder="Pick a start time" id="inicio_reserva" />
+							</div>
+						</div>
+						<div class="col col-sm-6">
+							<div class="fv-row mb-9">
+								<label class="fs-6 fw-bold mb-2 required">Fecha Fin reserva</label>
+								<input type="date" class="form-control form-control-solid" name="fin_reserva" placeholder="Pick a end time" id="fin_reserva" />
+							</div>
+						</div>
+					</div>
+					<div class="row m-2 ">
+						<div class="col col-sm-6">
+							<div class="fv-row mb-9">
+								<label class="fs-6 fw-bold mb-2 required">Hora Inicio reserva</label>
+								<input type="time" class="form-control form-control-solid" name="hora_inicio_reserva" id="hora_inicio_reserva" />
+							</div>
+						</div>
+						<div class="col col-sm-6">
+							<div class="fv-row mb-9">
+								<label class="fs-6 fw-bold mb-2 required">Hora Fin reserva</label>
+								<input type="time" class="form-control form-control-solid" name="hora_fin_reserva" id="hora_fin_reserva" />
+							</div>
+						</div>
+					</div>
+					<div class="row m-2 ">
+						<div class="col col-sm-6">
+							<label class="form-label fs-5 fw-bold my-3 required "> Docente: </label>
+							<select required class="form-select" name="id_docente_masivo" id="id_docente_masivo">
+								<?php
+								foreach ($usuarios_lista as $key) {
+								?>
+									<option value="<?php echo $key['id'] ?>"><?php echo $key['nombres'] . ' ' . $key['apellidos'] ?></option>
+								<?php
+								}
+								?>
+							</select>
+						</div>
+						<div class="col col-sm-6">
+							<label class="form-label fs-5 fw-bold my-3 required"> NRC - Descripción asignatura :</label>
+							<input type="text" id="nombre_asignatura_masivo" name="nombre_asignatura_masivo" class=" form-control">
+						</div>
+					</div>
+					<div class="row m-2 ">
+
+					</div>
+					<div class="m-2 p-2">
+						<button type="submit" class="btn btn-primary">
+							Generar
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>

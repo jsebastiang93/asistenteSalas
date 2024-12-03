@@ -22,6 +22,10 @@ if (isset($_POST['formulario'])) {
     $formulario = "";
 }
 
+$sql = "SELECT * FROM roles WHERE estado = 1";
+$query = $dbm->prepare($sql);
+$query->execute();
+$roles_lista = array_asociativo($query);
 
 
 if ($formulario == "crear_usuario" && $formulario != "") {
@@ -36,24 +40,34 @@ if ($formulario == "crear_usuario" && $formulario != "") {
     $usuario = strstr($email, "@", true);
     $contrasena = md5($_POST['password']);
 
-    // Crear usuario
-    $sql = "INSERT INTO usuarios (usuario, contrasena, tipo_identificacion, identificacion, nombres, apellidos, celular, email, id_rol, estado, fecha) VALUES ('$usuario', '$contrasena','$tipo_identificacion', '$numero_identificacion', '$nombres', '$apellidos', '$celular', '$email', '$rol', '1', NOW())";
+    $sql = "SELECT COUNT(*) AS cont FROM usuarios WHERE email = '$email'";
     $query = $dbm->prepare($sql);
-    if ($query->execute()) {
-        // EJECUTÓ BIEN
+    $query->execute();
+    $cont = array_asociativo($query)[0]['cont'];
+
+    if ($cont == 0) {
+        $sql = "INSERT INTO usuarios (usuario, contrasena, tipo_identificacion, identificacion, nombres, apellidos, celular, email, id_rol, estado, fecha_creacion, usuario_creacion) VALUES ('$usuario', '$contrasena','$tipo_identificacion', '$numero_identificacion', '$nombres', '$apellidos', '$celular', '$email', '$rol', '1', NOW(), '".$_SESSION['id_usuario']."')";
+        $query = $dbm->prepare($sql);
+        if ($query->execute()) {
 ?>
-        <script>
-            alert("El usuario se insertó correctamente");
-        </script>
+            <script>
+                alert("El usuario se insertó correctamente");
+            </script>
 
-    <?php
+        <?php
+        } else {
+        ?>
+            <script>
+                alert("Error! El usuario no se insertó correctamente");
+            </script>
+
+        <?php
+        }
     } else {
-        // ERROR DOS
-    ?>
+        ?>
         <script>
-            alert("Error! El usuario no se insertó correctamente");
+            alert("Error! El usuario ya existe");
         </script>
-
     <?php
     }
 }
@@ -69,10 +83,9 @@ if ($formulario == "actualizar_usuario" && $formulario != "") {
     $rol = $_POST['rol'];
     $estado = $_POST['estado'];
     $usuario = strstr($email, "@", true);
-    $contrasena = md5($_POST['password']);
     $id = $_POST['id'];
 
-    $sql = "UPDATE usuarios SET tipo_identificacion = '$tipo_identificacion', identificacion = '$numero_identificacion', nombres = '$nombres', apellidos = '$apellidos', celular = '$celular', email = '$email', nombres = '$nombres', id_rol = '$rol', estado = '$estado', nombres = '$nombres', usuario = '$usuario', contrasena = '$contrasena' WHERE id ='$id' ";
+    $sql = "UPDATE usuarios SET tipo_identificacion = '$tipo_identificacion', identificacion = '$numero_identificacion', nombres = '$nombres', apellidos = '$apellidos', celular = '$celular', email = '$email', nombres = '$nombres', id_rol = '$rol', estado = '$estado', nombres = '$nombres', usuario = '$usuario' WHERE id ='$id' ";
     $query = $dbm->prepare($sql);
 
     if ($query->execute()) {
@@ -92,7 +105,7 @@ if ($formulario == "actualizar_usuario" && $formulario != "") {
 }
 
 // Consultar usuarios tabla
-$sql = "SELECT * FROM usuarios";
+$sql = "SELECT usuarios.* , roles.nombre as nombre_rol FROM usuarios, roles WHERE usuarios.id_rol = roles.id";
 $query = $dbm->prepare($sql);
 $query->execute();
 $usuarios = array_asociativo($query);
@@ -101,14 +114,14 @@ $usuarios = array_asociativo($query);
 // Filtrar usuario
 if ($formulario == "filtrar_usuario" && $formulario != "") {
     $comodin = "";
-    
+
     $identificacion = $_POST['numero_identificacion'];
     $comodin_identificacion = "";
     if ($identificacion != "") {
         $comodin_identificacion = " AND identificacion = '$identificacion'";
         $comodin .= $comodin_identificacion;
     }
-    
+
     $usuario = $_POST['usuario'];
     $comodin_usuario = "";
     if ($usuario != "") {
@@ -123,7 +136,7 @@ if ($formulario == "filtrar_usuario" && $formulario != "") {
         $comodin .= $comodin_nombres;
     }
 
-    $sql = "SELECT * FROM usuarios WHERE 1 = 1 $comodin";
+    $sql = "SELECT usuarios.* , roles.nombre as nombre_rol FROM usuarios, roles WHERE usuarios.id_rol = roles.id $comodin";
     $query = $dbm->prepare($sql);
     $query->execute();
     $usuarios = array_asociativo($query);
