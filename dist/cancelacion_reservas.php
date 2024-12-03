@@ -11,6 +11,7 @@ date_default_timezone_set('America/Bogota');
 $dbm = conectar_mysql();
 $horaActual = new DateTime();
 $fecha_hora_hoy = date("Y-m-d H:i:s");
+$fecha_hoy = date("Y-m-d");
 // Restar 30 minutos
 $horaActual->modify('-30 minutes');
 
@@ -21,7 +22,7 @@ $horaHace30Minutos = $horaActual->format('H:i:s');
 $sql = "SELECT *
 FROM reservas
 WHERE estado NOT IN (0, 2)
-  AND fecha_reserva = CURRENT_DATE
+  AND fecha_reserva = '$fecha_hoy'
   AND hora_reserva_inicio <= '$horaHace30Minutos'
 ";
 $query = $dbm->prepare($sql);
