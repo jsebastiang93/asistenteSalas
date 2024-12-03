@@ -235,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $datos['libreria'] = __DIR__ . '/../plugins/PHPMailer-master/PHPMailerAutoload.php';
                 $datos['asunto'] = 'Reserva de sala Unicatólica exitosa # ' . $id_ultimo;
                 $datos['email_enviar'] = nombre_usuarios($id_docente, $dbm_mysql)['email'];
-                if (id_rol($id_docente, $dbm_mysql)['id_rol'] == 2) {
+                if (id_rol($id_usuario, $dbm_mysql)['id_rol'] == 2) {
                     $datos['detalle'] = "
                     Usted realizó con éxito la reserva de la sala $nombre_sede - $detalle_sala para la fecha $fecha_reserva en el horario $hora_inicio - $hora_fin.
                     <br>
