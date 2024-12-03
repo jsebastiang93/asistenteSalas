@@ -4,13 +4,13 @@
 include "seguridad/conexion.php";
 include "src/functions/main.php";
 include "src/functions/email.php";
-$fecha_hora_hoy = date("Y-m-d H:i:s");
+
 
 setlocale(LC_TIME, "spanish");
 date_default_timezone_set('America/Bogota');
 $dbm = conectar_mysql();
 $horaActual = new DateTime();
-
+$fecha_hora_hoy = date("Y-m-d H:i:s");
 // Restar 30 minutos
 $horaActual->modify('-30 minutes');
 
