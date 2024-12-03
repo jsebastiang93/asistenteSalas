@@ -183,7 +183,7 @@
 									</div>
 									<div class="row">
 										<?php
-										var_dump($_SESSION['id_rol']);
+										// var_dump($_SESSION['id_rol']);
 										if ($_SESSION['id_rol'] == 2) {
 										?>
 											<input type="hidden" name="id_docente" name="id_docente" value="<?php echo $_SESSION['id_usuario'] ?>">
